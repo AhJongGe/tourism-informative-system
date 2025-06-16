@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign up for PayPal</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 60px;
+    }
+    img.logo { height: 40px; margin-bottom: 20px; }
+    h2 { font-weight: 500; }
+    .input-wrapper { position: relative; width: 350px; margin-top: 15px; }
+    input[type="email"], input[type="text"], input[type="password"] {
+      width: 100%; padding: 15px; font-size: 16px;
+      border: 1px solid #ccc; border-radius: 5px; display: block;
+    }
+    .error { color: red; font-size: 14px; margin-top: 5px; }
+    .toggle-visibility {
+      position: absolute; top: 50%; right: 12px; transform: translateY(-50%);
+      width: 24px; height: 24px; cursor: pointer;
+    }
+    button {
+      background-color: #003087; color: white; font-weight: bold; font-size: 18px;
+      padding: 14px 0; width: 350px; border: none; border-radius: 30px; cursor: pointer;
+      transition: filter 0.2s, margin-top 0.4s ease; margin-top: 15px;
+    }
+    button:hover { filter: brightness(1.3); }
+    button:active { filter: brightness(0.7); }
+    .login {
+      position: absolute; top: 20px; right: 40px; color: #0070ba;
+      font-weight: bold; text-decoration: none; transition: filter 0.2s;
+    }
+    .login:hover { filter: brightness(1.3); }
+    .login:active { filter: brightness(0.7); }
+    .hidden { display: none; }
+    #container {
+      display: flex; flex-direction: column; align-items: center; transition: transform 0.3s ease;
+    }
+    #extra-fields-wrapper {
+      display: flex; flex-direction: column; align-items: center; width: 100%; overflow: hidden;
+      max-height: 0; opacity: 0; transition: max-height 0.4s, opacity 0.4s, margin-bottom 0.4s;
+    }
+    #extra-fields-wrapper.show { max-height: 500px; opacity: 1; margin-bottom: 20px; }
+    @media (max-width: 400px) {
+      .input-wrapper, button { width: 90%; }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="{{ url_for('login_page') }}" class="login">Log In</a>
+  <img src="{{ url_for('static', filename='images/swan.png') }}" alt="swan" class="logo">
+  <h2>Sign up for Sibu Tourism System</h2>
+
+  <div id="container">
+    <div class="input-wrapper">
+      <input type="email" id="email" placeholder="Your email">
+    </div>
+    <div id="error" class="error hidden">Please enter a valid email.</div>
+
+    <div id="extra-fields-wrapper">
+      <div class="input-wrapper">
+        <input type="text" placeholder="Username">
+      </div>
+      <div class="input-wrapper">
+        <input type="password" id="password" placeholder="Password">
+        <img src="{{ url_for('static', filename='images/eye_closed.png') }}"
+             alt="Toggle visibility" class="toggle-visibility" id="togglePassword"
+             data-eye-open="{{ url_for('static', filename='images/eye_open.png') }}"
+             data-eye-closed="{{ url_for('static', filename='images/eye_closed.png') }}">
+      </div>
+      <div class="input-wrapper">
+        <input type="password" id="confirmPassword" placeholder="Confirm Password">
+        <img src="{{ url_for('static', filename='images/eye_closed.png') }}"
+             alt="Toggle visibility" class="toggle-visibility" id="toggleConfirmPassword"
+             data-eye-open="{{ url_for('static', filename='images/eye_open.png') }}"
+             data-eye-closed="{{ url_for('static', filename='images/eye_closed.png') }}">
+      </div>
+    </div>
+
+    <button id="nextBtn">Next</button>
+  </div>
+
+  <script>
+  const nextBtn = document.getElementById('nextBtn');
+  const emailInput = document.getElementById('email');
+  const errorDiv = document.getElementById('error');
+  const extraWrapper = document.getElementById('extra-fields-wrapper');
+  const passwordInput = document.getElementById('password');
+  const confirmPasswordInput = document.getElementById('confirmPassword');
+  const togglePassword = document.getElementById('togglePassword');
+  const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+
+  let isFirstStep = true;
+
+  function isValidEmail(email) {
+    const regex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    return regex.test(email);
+  }
+
+  nextBtn.addEventListener('click', () => {
+    const email = emailInput.value.trim();
+
+    if (isFirstStep) {
+      if (isValidEmail(email)) {
+        errorDiv.classList.add('hidden');
+        extraWrapper.classList.add('show');
+        nextBtn.textContent = 'Sign Up';
+        isFirstStep = false;
+      } else {
+        errorDiv.classList.remove('hidden');
+        extraWrapper.classList.remove('show');
+        nextBtn.textContent = 'Next';
+      }
+    } else {
+      const username = document.querySelector('input[placeholder="Username"]').value.trim();
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+
+      if (!username || !password || !confirmPassword) {
+        alert('Please fill in all fields.');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert('Passwords do not match.');
+        return;
+      }
+
+      // ✅ Send registration data to backend
+      fetch('http://localhost:5000/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, username, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert('Account successfully created!');
+          window.location.href = "{{ url_for('login_page') }}";
+        } else {
+          alert('Error: ' + data.message);
+        }
+      })
+      .catch(err => {
+        console.error('Error:', err);
+        alert('Something went wrong!');
+      });
+    }
+  });
+
+  togglePassword.addEventListener('click', () => {
+    const isVisible = passwordInput.type === 'text';
+    passwordInput.type = isVisible ? 'password' : 'text';
+    // Use the data attributes for URLs
+    togglePassword.src = isVisible ? togglePassword.dataset.eyeClosed : togglePassword.dataset.eyeOpen;
+  });
+
+  toggleConfirmPassword.addEventListener('click', () => {
+    const isVisible = confirmPasswordInput.type === 'text';
+    confirmPasswordInput.type = isVisible ? 'password' : 'text';
+    // Use the data attributes for URLs
+    toggleConfirmPassword.src = isVisible ? toggleConfirmPassword.dataset.eyeClosed : toggleConfirmPassword.dataset.eyeOpen;
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      nextBtn.click();
+    }
+  });
+  </script>
+
+</body>
+</html>

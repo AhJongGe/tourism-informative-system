@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Assistant Chat</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #fff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      height: 100%;
+      min-height: 100vh;
+      color: #222;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background: #fff;
+    }
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 56px;
+      background: #fff;
+      border-bottom: 1px solid #ececec;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .navbar .back-btn {
+      position: absolute;
+      left: 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+    }
+    .navbar .back-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: #333;
+    }
+    .navbar-title {
+      font-size: 19px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      color: #2a2a2a;
+      text-align: center;
+      flex: 1;
+    }
+    .clear-chat-btn {
+      position: absolute;
+      right: 24px;
+      top: 10px;
+      padding: 7px 16px;
+      border: 2px solid #003087;
+      background: #fff;
+      color: #003087;
+      border-radius: 5px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.14s, color 0.14s;
+    }
+    .clear-chat-btn:hover {
+      background: #003087;
+      color: #fff;
+    }
+    #chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 72px 0 130px 0; /* Space for navbar and input */
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #fff;
+    }
+    .message-row {
+      display: flex;
+      align-items: flex-end;
+      margin: 0 20px;
+    }
+    .message-row.self {
+      justify-content: flex-end;
+    }
+    .message-row.assistant {
+      justify-content: flex-start;
+    }
+    .profile-pic {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      margin: 0 8px;
+      object-fit: cover;
+      background: #eee;
+      border: 1px solid #ddd;
+    }
+    .chat-bubble {
+      max-width: 70vw;
+      padding: 12px 18px;
+      border-radius: 20px 20px 6px 20px;
+      background: #f1f1f1;
+      color: #222;
+      font-size: 17px;
+      margin-bottom: 2px;
+      word-break: break-word;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: background .1s;
+    }
+    .self .chat-bubble {
+      background: #d4ecff;
+      color: #154c79;
+      border-radius: 20px 20px 20px 6px;
+      margin-left: 40px;
+    }
+    .assistant .chat-bubble {
+      background: #f6f7fb;
+      color: #252525;
+      border-radius: 20px 20px 6px 20px;
+      margin-right: 40px;
+    }
+    .chat-input-area {
+      background: #fafbfc;
+      padding: 24px 0 24px 0;
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: center;
+      border-top: 1px solid #ececec;
+      z-index: 5;
+    }
+    .chat-input-container {
+      display: flex;
+      align-items: center;
+      background: #f6f6f6;
+      border-radius: 999px;
+      padding: 0 16px;
+      width: 50vw;
+      max-width: 600px;
+      min-width: 280px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border: 1px solid #ececec;
+    }
+    .send-btn {
+      background: #154c79;
+      border: none;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      margin-left: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .send-btn:hover {
+      background: #1a5a9e;
+    }
+    .send-btn svg {
+      fill: #fff;
+      width: 20px;
+      height: 20px;
+    }
+    .chat-input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #222;
+      font-size: 17px;
+      flex: 1;
+      padding: 14px 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <button class="back-btn" onclick="window.history.back()" aria-label="Back">
+      <svg viewBox="0 0 24 24"><path d="M15.5 19.5L8.5 12.5L15.5 5.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="navbar-title">AI Assistant</div>
+    <button class="clear-chat-btn" onclick="confirmClearChat()">Clear Chat History</button>
+  </div>
+
+  <!-- Chat message area -->
+  <div id="chat-messages"></div>
+
+  <!-- Chat input at bottom -->
+  <form class="chat-input-area" autocomplete="off" onsubmit="return sendMessage();">
+    <div class="chat-input-container">
+      <input class="chat-input" type="text" placeholder="Message..." id="msg" autocomplete="off" tabindex="2" />
+      <button type="submit" class="send-btn" tabindex="1" aria-label="Send">
+        <!-- Send icon: simple arrow -->
+        <svg viewBox="0 0 24 24"><path d="M2 21l21-9-21-9v7l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </form>
+
+  <script>
+const CHAT_STORAGE_KEY = "chatbot-history-v1";
+
+// Confirmation for clearing chat
+function confirmClearChat() {
+  if (window.confirm("Are you sure you want to clear all chat history? This cannot be undone.")) {
+    clearChatHistory();
+  }
+}
+
+// On load: restore chat history and focus input
+window.onload = () => {
+  restoreChatHistory();
+  const chatMessages = document.getElementById('chat-messages');
+  if (!localStorage.getItem(CHAT_STORAGE_KEY) || chatMessages.innerHTML.trim() === "") {
+    addMessage(
+      "Welcome! I am your Sibu Tourism Guide Assistant. Ask about any place, food, or activity in Sibu.",
+      "assistant"
+    );
+  }
+  document.getElementById('msg').focus();
+};
+
+// Clears chat window and history from localStorage
+function clearChatHistory() {
+  document.getElementById('chat-messages').innerHTML = "";
+  localStorage.removeItem(CHAT_STORAGE_KEY);
+}
+
+// Save all chat messages to localStorage
+function saveChatHistory() {
+  const chatMessages = document.getElementById('chat-messages');
+  const msgs = [];
+  chatMessages.querySelectorAll('.message-row').forEach(row => {
+    const sender = row.classList.contains('self') ? 'self' : 'assistant';
+    const text = row.querySelector('.chat-bubble').textContent;
+    msgs.push({ sender, text });
+  });
+  localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(msgs));
+}
+
+// Restore messages from localStorage
+function restoreChatHistory() {
+  const chatMessages = document.getElementById('chat-messages');
+  chatMessages.innerHTML = "";
+  const msgs = JSON.parse(localStorage.getItem(CHAT_STORAGE_KEY) || "[]");
+  msgs.forEach(m => addMessage(m.text, m.sender, false));
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Add message to chat (and optionally save)
+function addMessage(text, sender, save = true) {
+  const chatMessages = document.getElementById('chat-messages');
+  const msgRow = document.createElement('div');
+  msgRow.className = 'message-row ' + sender;
+
+  // Profile image
+  const img = document.createElement('img');
+  img.className = 'profile-pic';
+  img.src = sender === "self" ? "/static/images/self.png" : "/static/images/chatbot.png";
+  img.alt = sender === "self" ? "You" : "Assistant";
+
+  // Chat bubble
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble';
+  bubble.textContent = text;
+
+  if (sender === "self") {
+    msgRow.appendChild(bubble);
+    msgRow.appendChild(img);
+  } else {
+    msgRow.appendChild(img);
+    msgRow.appendChild(bubble);
+  }
+  chatMessages.appendChild(msgRow);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  if (save) saveChatHistory();
+}
+
+// Call backend to get assistant reply
+function fetchAssistantReply(userMsg) {
+  addMessage("...", "assistant"); // Show a loading indicator
+
+  fetch("/chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ message: userMsg })
+  })
+  .then(response => response.json())
+  .then(data => {
+    // Remove the "..." loading message
+    const chatMessages = document.getElementById('chat-messages');
+    chatMessages.removeChild(chatMessages.lastChild);
+    // Add assistant's real reply
+    addMessage(data.reply, "assistant");
+  })
+  .catch(error => {
+    // Remove the "..." message if error occurs
+    const chatMessages = document.getElementById('chat-messages');
+    chatMessages.removeChild(chatMessages.lastChild);
+    addMessage("[Error contacting assistant. Try again later.]", "assistant");
+    console.error(error);
+  });
+}
+
+// Handle send message event
+function sendMessage() {
+  const input = document.getElementById('msg');
+  const msg = input.value.trim();
+  if (msg.length) {
+    addMessage(msg, "self");
+    input.value = '';
+    fetchAssistantReply(msg);
+  }
+  return false; // Prevent form submit reload
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reset Password</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-container {
+      width: 350px;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 40px 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .login-container img {
+      height: 40px;
+      margin-bottom: 30px;
+    }
+    .input-wrapper {
+      position: relative;
+      width: 100%;
+      margin-bottom: 18px;
+    }
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 40px 12px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    .toggle-visibility {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+      object-fit: contain;
+      background: none;
+      pointer-events: auto;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 999px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #003087;
+      color: white;
+      margin-top: 12px;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
+    .btn:hover {
+      background-color: #002570;
+    }
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin-bottom: 10px;
+      display: none;
+    }
+    .success-message {
+      color: green;
+      font-size: 14px;
+      margin-bottom: 10px;
+      display: none;
+    }
+    input[type="password"], input[type="text"] {
+      width: 100%;
+      padding: 12px 40px 12px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+
+    input::placeholder {
+      font-size: 16px;
+      font-family: inherit;
+      color: #bbb;
+      opacity: 1;
+    }
+    .toggle-visibility:active, .toggle-visibility:focus {
+      outline: none;
+      box-shadow: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <img src="{{ url_for('static', filename='images/lock.png') }}" alt="lock" class="logo">
+    
+    <h3 style="margin-bottom: 24px;">Reset Your Password</h3>
+
+    <form id="resetForm" method="POST">
+      <div class="input-wrapper">
+        <input type="password" id="newPassword" name="new_password" placeholder="New password" autocomplete="new-password">
+        <img src="{{ url_for('static', filename='images/eye_closed.png') }}"
+             alt="Show/Hide" class="toggle-visibility" id="toggleNewPassword"
+             data-eye-open="{{ url_for('static', filename='images/eye_open.png') }}"
+             data-eye-closed="{{ url_for('static', filename='images/eye_closed.png') }}">
+      </div>
+      <div class="input-wrapper">
+        <input type="password" id="confirmPassword" name="confirm_password" placeholder="Re-type new password" autocomplete="new-password">
+        <img src="{{ url_for('static', filename='images/eye_closed.png') }}"
+             alt="Show/Hide" class="toggle-visibility" id="toggleConfirmPassword"
+             data-eye-open="{{ url_for('static', filename='images/eye_open.png') }}"
+             data-eye-closed="{{ url_for('static', filename='images/eye_closed.png') }}">
+      </div>
+      <div class="error-message" id="errorMessage"></div>
+      <button type="submit" class="btn">Confirm</button>
+    </form>
+  </div>
+
+  <script>
+    const newPasswordInput = document.getElementById('newPassword');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const toggleNewPassword = document.getElementById('toggleNewPassword');
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    const errorMessage = document.getElementById('errorMessage');
+    const resetForm = document.getElementById('resetForm');
+
+    toggleNewPassword.addEventListener('click', () => {
+      const visible = newPasswordInput.type === 'text';
+      newPasswordInput.type = visible ? 'password' : 'text';
+      toggleNewPassword.src = visible ? toggleNewPassword.dataset.eyeClosed : toggleNewPassword.dataset.eyeOpen;
+    });
+
+    toggleConfirmPassword.addEventListener('click', () => {
+      const visible = confirmPasswordInput.type === 'text';
+      confirmPasswordInput.type = visible ? 'password' : 'text';
+      toggleConfirmPassword.src = visible ? toggleConfirmPassword.dataset.eyeClosed : toggleConfirmPassword.dataset.eyeOpen;
+    });
+
+    resetForm.addEventListener('submit', function(event) {
+      if (newPasswordInput.value.length < 8) {
+        event.preventDefault();
+        errorMessage.textContent = "Password must be at least 8 characters.";
+        errorMessage.style.display = "block";
+        return;
+      }
+      if (newPasswordInput.value !== confirmPasswordInput.value) {
+        event.preventDefault();
+        errorMessage.textContent = "Passwords do not match.";
+        errorMessage.style.display = "block";
+        return;
+      }
+      errorMessage.style.display = "none";
+      // Form will be submitted to backend (Flask) if all checks pass
+    });
+  </script>
+</body>
+</html>

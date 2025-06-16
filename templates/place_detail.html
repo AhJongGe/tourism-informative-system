@@ -1,0 +1,105 @@
+<!-- place_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ place.name }} | Details</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .place-detail { max-width: 520px; margin: 32px auto; background: #fff; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.11); padding: 32px 28px 28px 28px;}
+    .place-detail img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 12px; }
+    .place-title { font-size: 2rem; font-weight: bold; margin-bottom: 4px;}
+    .place-desc { margin-bottom: 20px; color: #555; }
+    .cat-chips { display: flex; gap: 10px; margin-bottom: 14px; }
+    .chip { background: #f4f4f8; color: #003087; padding: 3px 11px; border-radius: 99px; font-size: 0.95rem; }
+    .section { margin-bottom: 16px; }
+    .section h4 { margin: 0 0 5px 0; font-size: 1.07rem; font-weight: bold;}
+    .hours { color: #233; }
+    .features-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px;}
+    .feature-chip { background: #e5f3ff; color: #116; border-radius: 6px; padding: 2px 8px; font-size: 0.96rem;}
+    .socials a { margin-right: 12px;}
+    .budget { font-weight: bold; color: #077;}
+  </style>
+</head>
+<body>
+<div class="place-detail">
+  {% if place.photo %}
+    <img src="{{ place.photo }}" alt="Photo of {{ place.name }}">
+  {% endif %}
+  <div class="place-title">{{ place.name }}</div>
+  <div class="place-desc">{{ place.description }}</div>
+  <div class="cat-chips">
+    {% for cat in place.category %}
+      <span class="chip">{{ cat.title() }}</span>
+    {% endfor %}
+    {% if place.cuisine_tags and place.cuisine_tags.venue_type %}
+      {% for venue in place.cuisine_tags.venue_type %}
+        <span class="chip">{{ venue.replace('_',' ').title() }}</span>
+      {% endfor %}
+    {% endif %}
+  </div>
+  <div class="section">
+    <h4>Address</h4>
+    <div>{{ place.address }}</div>
+    {% if place['map link'] %}
+      <a href="{{ place['map link'] }}" target="_blank">View on Google Maps</a>
+    {% endif %}
+  </div>
+  {% if place.phone %}
+    <div class="section">
+      <h4>Contact</h4>
+      <div>{{ place.phone }}</div>
+    </div>
+  {% endif %}
+  {% if place.suggested_budget_per_person or place['suggested budget per person'] %}
+    <div class="section budget">
+      Budget: {{ place.suggested_budget_per_person or place['suggested budget per person'] }}
+    </div>
+  {% endif %}
+  <div class="section">
+    <h4>Operating Hours</h4>
+    <div class="hours">
+      {% for day, hour in place.hours.items() %}
+        {{ day.title() }}: {{ hour }}<br>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="section">
+    <h4>Food & Drinks</h4>
+    {% if place.cuisine_tags and place.cuisine_tags.cuisine_type %}
+      <div>Cuisine: {{ place.cuisine_tags.cuisine_type | join(', ') }}</div>
+    {% endif %}
+    {% if place.cuisine_tags and place.cuisine_tags.food_category %}
+      <div>Menu: {{ place.cuisine_tags.food_category | join(', ') }}</div>
+    {% endif %}
+    {% if place.menu %}
+      <div><a href="{{ place.menu }}" target="_blank">Full menu</a></div>
+    {% endif %}
+  </div>
+  <div class="section">
+    <h4>Meal Time</h4>
+    {% if place.cuisine_tags and place.cuisine_tags.meal_time %}
+      <div>{{ place.cuisine_tags.meal_time | join(', ') }}</div>
+    {% endif %}
+  </div>
+  {% if place.cuisine_tags and place.cuisine_tags.features %}
+    <div class="section">
+      <h4>Features</h4>
+      <div class="features-list">
+        {% for feat in place.cuisine_tags.features %}
+          <span class="feature-chip">{{ feat.replace('_',' ').title() }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+  {% if place.accounts %}
+    <div class="section socials">
+      <h4>Social / Online</h4>
+      {% for acc, link in place.accounts.items() %}
+        <a href="{{ link }}" target="_blank">{{ acc.title() }}</a>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+</body>
+</html>

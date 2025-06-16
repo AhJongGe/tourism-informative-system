@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Forgot Password</title>
+  <style>
+    /* (same as your previous CSS for .login-container, .btn, .error-message, etc.) */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-container {
+      width: 350px;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 40px 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .login-container img {
+      height: 40px;
+      margin-bottom: 30px;
+    }
+    input[type="text"], input[type="password"], input[type="number"] {
+      width: 100%;
+      padding: 12px 40px 12px 12px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    .error-message {
+      color: red;
+      font-size: 13px;
+      text-align: left;
+      margin-bottom: 10px;
+      display: none;
+    }
+    .right-link {
+      font-size: 14px;
+      color: #0070ba;
+      cursor: pointer;
+      text-align: right;
+      display: block;
+      margin: 4px 0 10px;
+    }
+    .right-link:hover {
+      color: #005ea6;
+      text-decoration: underline;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 999px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.05s ease;
+    }
+    .btn-primary {
+      background-color: #003087;
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: #002570;
+    }
+    .btn-primary:active,
+    .btn-secondary:active {
+      transform: scale(0.98);
+      filter: brightness(90%);
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #ccc;
+    }
+    .divider:not(:empty)::before {
+      margin-right: 10px;
+    }
+    .divider:not(:empty)::after {
+      margin-left: 10px;
+    }
+    .btn-secondary {
+      background-color: white;
+      border: 1px solid #003087;
+      color: #003087;
+    }
+    .btn-secondary:hover {
+      background-color: #f2f8ff;
+    }
+    .verification-info {
+      color: #666;
+      margin-bottom: 10px;
+    }
+    .countdown {
+      color: #0070ba;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <img src="{{ url_for('static', filename='images/lock.png') }}" alt="lock" class="logo" id="logoImg">
+
+    <input type="text" placeholder="Email address" id="email" autocomplete="username">
+    <div class="error-message" id="emailError">Please enter a valid email address. e.g. username@domain.com</div>
+
+    <div class="verification-info" id="verificationInfo" style="display:none;">
+      A 6-digit verification code has been sent to your email.<br>
+      Please enter it below to reset your password.
+    </div>
+    <div class="countdown" id="countdown" style="display:none;"></div>
+
+    <input type="number" placeholder="Verification code" id="codeField" style="display:none;" maxlength="6">
+
+    <button class="btn btn-primary" onclick="handleSendOrResend()" id="sendBtn">Next</button>
+
+    <div id="verifySection" style="display:none;">
+      <div class="divider">or</div>
+      <button class="btn btn-secondary" onclick="handleVerify()" id="verifyBtn">Verify</button>
+  </div>
+
+  <script>
+    let codeSent = false;
+    let timer = null;
+    let secondsLeft = 0;
+    const emailInput = document.getElementById('email');
+    const emailError = document.getElementById('emailError');
+    const codeField = document.getElementById('codeField');
+    const sendBtn = document.getElementById('sendBtn');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const verificationInfo = document.getElementById('verificationInfo');
+    const countdown = document.getElementById('countdown');
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function handleSendOrResend() {
+      const email = emailInput.value.trim();
+      if (!isValidEmail(email)) {
+        emailError.style.display = 'block';
+        return;
+      }
+      emailError.style.display = 'none';
+      sendBtn.disabled = true;
+      sendBtn.textContent = "Sending...";
+
+      fetch('/api/send_verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          codeSent = true;
+          showVerificationUI();
+        } else {
+          sendBtn.disabled = false;
+          sendBtn.textContent = 'Next';
+          alert(data.message || 'Unable to send verification code.');
+        }
+      })
+      .catch(() => {
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Next';
+        alert('Server error. Try again.');
+      });
+    }
+
+    function showVerificationUI() {
+      codeField.style.display = 'block';
+      verificationInfo.style.display = 'block';
+      sendBtn.textContent = 'Resend verification code';
+      sendBtn.disabled = true;
+      document.getElementById('verifySection').style.display = 'block'; // Show the divider + verify button section
+      startCountdown();
+    }
+
+
+    function startCountdown() {
+      secondsLeft = 60;
+      countdown.style.display = 'block';
+      updateCountdown();
+      timer = setInterval(() => {
+        secondsLeft--;
+        updateCountdown();
+        if (secondsLeft <= 0) {
+          clearInterval(timer);
+          sendBtn.disabled = false;
+          countdown.textContent = 'Code expired. Please resend.';
+        }
+      }, 1000);
+    }
+    function updateCountdown() {
+      countdown.textContent = `You can resend in ${secondsLeft}s`;
+    }
+
+    function handleVerify() {
+      const code = codeField.value.trim();
+      const email = emailInput.value.trim();
+      if (!code || code.length !== 6) {
+        alert('Please enter a 6-digit verification code.');
+        return;
+      }
+      fetch('/api/verify_code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          window.location.href = "{{ url_for('reset_pw_page') }}";
+        } else {
+          alert('Verification code is incorrect or expired.');
+        }
+      })
+      .catch(() => {
+        alert('Server error. Try again.');
+      });
+    }
+  </script>
+</body>
+</html>

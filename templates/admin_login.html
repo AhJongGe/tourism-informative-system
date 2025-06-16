@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PayPal-style Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2; /* Light grey background */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-container {
+      width: 350px;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 40px 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .login-container img {
+      height: 40px;
+      margin-bottom: 30px;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 12px 40px 12px 12px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 13px;
+      text-align: left;
+      margin-bottom: 10px;
+      display: none;
+    }
+
+    .right-link {
+      font-size: 14px;
+      color: #0070ba;
+      cursor: pointer;
+      text-align: right;
+      display: block;
+      margin: 4px 0 10px;
+    }
+
+    .right-link:hover {
+      color: #005ea6;
+      text-decoration: underline;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 999px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.05s ease;
+    }
+
+    .btn-primary {
+      background-color: #003087;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #002570;
+    }
+
+    .btn-primary:active,
+    .btn-secondary:active {
+      transform: scale(0.98);
+      filter: brightness(90%);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .divider:not(:empty)::before {
+      margin-right: 10px;
+    }
+
+    .divider:not(:empty)::after {
+      margin-left: 10px;
+    }
+
+    .btn-secondary {
+      background-color: white;
+      border: 1px solid #003087;
+      color: #003087;
+    }
+
+    .btn-secondary:hover {
+      background-color: #f2f8ff;
+    }
+
+    .password-container {
+      height: 0;
+      overflow: hidden;
+      transition: height 0.3s ease;
+    }
+
+    .password-container.visible {
+      height: 110px;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .toggle-password img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .toggle-password:hover img {
+      filter: brightness(80%);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <img src="swan.png" alt="swan" class="logo">
+
+    <input type="password" placeholder="Password" id="passwordField">
+    <div class="error-message" id="passwordError">Incorrect password. Please try again.</div>
+
+    <span class="right-link" onclick="alert('Password recovery not implemented')">Forgotten your password?</span>
+
+    <button class="btn btn-primary" onclick="handleLogin()">Proceed</button>
+
+    <div class="divider">or</div>
+
+    <button class="btn btn-secondary" onclick="window.location.href='mainpage.html'">Back to Main Page</button>
+    
+  </div>
+
+  <script>
+    function handleLogin() {
+      const passwordField = document.getElementById('passwordField');
+      const password = passwordField.value.trim();
+
+      // Check if password matches
+      if (password === 'thisisthepassword') {
+        window.location.href = 'admin_accounts.html'; // Redirect to admin accounts page
+      } else {
+        const passwordError = document.getElementById('passwordError');
+        passwordError.style.display = 'block'; // Show error message
+      }
+    }
+
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        handleLogin();
+      }
+    });
+  </script>
+
+</body>
+</html>

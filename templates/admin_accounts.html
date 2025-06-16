@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Registered Users</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #fafbff; }
+    .admin-container { width: 400px; margin: 40px auto; padding: 24px; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);}
+    h2 { text-align: center; }
+    ul { list-style: none; padding: 0; }
+    li { border-bottom: 1px solid #eee; padding: 10px 0; }
+    .email { font-weight: bold; }
+    .username { color: #555; }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <h2>Registered Users</h2>
+    <ul id="userList">
+      <li>Loading...</li>
+    </ul>
+  </div>
+  <script>
+    fetch('/api/admin/users')
+      .then(res => res.json())
+      .then(data => {
+        const ul = document.getElementById('userList');
+        ul.innerHTML = '';
+        if (data.success && data.users.length > 0) {
+          data.users.forEach(user => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="email">${user.email}</span><br><span class="username">${user.username}</span>`;
+            ul.appendChild(li);
+          });
+        } else {
+          ul.innerHTML = '<li>No users registered.</li>';
+        }
+      })
+      .catch(() => {
+        document.getElementById('userList').innerHTML = '<li>Error loading users.</li>';
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PayPal-style Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-container {
+      width: 350px;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 40px 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .login-container img {
+      height: 40px;
+      margin-bottom: 30px;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 12px 40px 12px 12px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 13px;
+      text-align: left;
+      margin-bottom: 10px;
+      display: none;
+    }
+
+    .right-link {
+      font-size: 14px;
+      color: #0070ba;
+      cursor: pointer;
+      text-align: right;
+      display: block;
+      margin: 4px 0 10px;
+    }
+
+    .right-link:hover {
+      color: #005ea6;
+      text-decoration: underline;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 999px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.05s ease;
+    }
+
+    .btn-primary {
+      background-color: #003087;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #002570;
+    }
+
+    .btn-primary:active,
+    .btn-secondary:active {
+      transform: scale(0.98);
+      filter: brightness(90%);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .divider:not(:empty)::before {
+      margin-right: 10px;
+    }
+
+    .divider:not(:empty)::after {
+      margin-left: 10px;
+    }
+
+    .btn-secondary {
+      background-color: white;
+      border: 1px solid #003087;
+      color: #003087;
+    }
+
+    .btn-secondary:hover {
+      background-color: #f2f8ff;
+    }
+
+    .password-container {
+      height: 0;
+      overflow: hidden;
+      transition: height 0.3s ease;
+    }
+
+    .password-container.visible {
+      height: 110px;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .toggle-password img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .toggle-password:hover img {
+      filter: brightness(80%);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <img src="{{ url_for('static', filename='images/swan.png') }}" alt="swan" class="logo" id="logoImg">
+
+    <input type="text" placeholder="Email address or mobile number" id="email" autocomplete="username">
+    <div class="error-message" id="emailError">Please enter a valid email address. e.g. username@domain.com</div>
+
+    <a href="{{ url_for('forgot_pw_page') }}" class="right-link">Forgot your password?</a>
+
+
+    <div class="password-container" id="passwordContainer">
+      <div class="password-wrapper">
+        <input type="password" placeholder="Password" id="passwordField" autocomplete="current-password">
+        <button class="toggle-password" onclick="togglePasswordVisibility()" tabindex="-1">
+          <img id="eyeIcon" src="{{ url_for('static', filename='images/eye_closed.png') }}" alt="Toggle visibility">
+        </button>
+      </div>
+      <span class="right-link" onclick="alert('Password recovery not implemented')">Forgotten your password?</span>
+    </div>
+
+    <button class="btn btn-primary" onclick="handleNext()" id="nextBtn">Next</button>
+
+    <div class="divider">or</div>
+
+    <button class="btn btn-secondary" onclick="window.location.href='{{ url_for('signup_page') }}'">Sign Up</button>
+  </div>
+
+  <script>
+    let stage = 0; // 0 = email, 1 = password
+
+    const emailInput = document.getElementById('email');
+    const passwordField = document.getElementById('passwordField');
+    const passwordContainer = document.getElementById('passwordContainer');
+    const nextBtn = document.getElementById('nextBtn');
+    const logoImg = document.getElementById('logoImg');
+    const emailError = document.getElementById('emailError');
+
+    // Email format validation
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function handleNext() {
+      const email = emailInput.value.trim();
+
+      if (stage === 0) {
+        if (isValidEmail(email)) {
+          emailError.style.display = 'none';
+          passwordContainer.classList.add('visible');
+          nextBtn.textContent = 'Login';
+          passwordField.focus();
+          stage = 1;
+        } else {
+          emailError.style.display = 'block';
+          passwordContainer.classList.remove('visible');
+          nextBtn.textContent = 'Next';
+          stage = 0;
+        }
+      } else {
+        // Send login to backend
+        const password = passwordField.value;
+        fetch('/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            if (data.redirect) {
+              window.location.href = data.redirect;
+            } else {
+              window.location.href = '/userpage';
+            }
+          } else {
+            alert(data.message || 'Login failed.');
+          }
+        })
+        .catch(err => {
+          console.error('Login error:', err);
+          alert('Something went wrong.');
+        });
+      }
+    }
+
+    function togglePasswordVisibility() {
+      const field = document.getElementById('passwordField');
+      const icon = document.getElementById('eyeIcon');
+      const isHidden = field.type === 'password';
+      field.type = isHidden ? 'text' : 'password';
+      icon.src = isHidden
+        ? "{{ url_for('static', filename='images/eye_open.png') }}"
+        : "{{ url_for('static', filename='images/eye_closed.png') }}";
+    }
+
+    // Allow Enter key to proceed
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        handleNext();
+      }
+    });
+
+  </script>
+</body>
+</html>
