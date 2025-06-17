@@ -418,4 +418,6 @@ def forgot_pw_page():
     return render_template('forgot_pw.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    import os
+    port = int(os.environ.get('PORT', 10000))  # Default for local, Render sets $PORT
+    app.run(host='0.0.0.0', port=port)
