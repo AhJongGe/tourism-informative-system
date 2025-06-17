@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Account</title>
+  <style>
+    .account-card { max-width: 480px; margin: 32px auto; background: #fff; padding: 32px; border-radius: 18px; box-shadow: 0 2px 12px #bbb2; }
+    .account-profile-pic { width: 108px; height: 108px; border-radius: 50%; object-fit: cover; border: 3px solid #ddd; margin-bottom: 18px;}
+    .account-field { margin: 18px 0; }
+    .account-field label { display: block; margin-bottom: 6px; font-weight: bold;}
+    .account-actions { margin-top: 32px; display: flex; justify-content: space-between; }
+    .delete-btn { background: #e00; color: #fff; border: none; padding: 9px 20px; border-radius: 7px; font-weight: bold; cursor: pointer;}
+    .logout-btn { background: #222; color: #fff; border: none; padding: 9px 20px; border-radius: 7px; font-weight: bold; cursor: pointer;}
+    .account-form input[type="text"], .account-form input[type="email"], .account-form input[type="password"] {
+      width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;
+    }
+    .account-form input[type="file"] { margin-top: 4px;}
+    .account-form button { margin-top: 12px; padding: 8px 20px; border-radius: 7px; background: #003087; color: #fff; border: none; font-weight: bold;}
+    .account-form { margin-bottom: 20px; }
+    .msg { color: green; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <div class="account-card">
+    <h2>My Account</h2>
+    {% if msg %}<div class="msg">{{msg}}</div>{% endif %}
+    <img src="{{ profile_pic_url }}" class="account-profile-pic" alt="Profile Picture">
+    <!-- Edit Profile Picture -->
+    <form method="POST" enctype="multipart/form-data" class="account-form">
+      <div class="account-field">
+        <label>Change Profile Picture</label>
+        <input type="file" name="profile_pic" accept="image/*">
+        <button type="submit">Upload</button>
+      </div>
+    </form>
+    <!-- Edit Username -->
+    <form method="POST" class="account-form">
+      <div class="account-field">
+        <label>Username</label>
+        <input type="text" name="username" value="{{ user.username }}" required>
+        <button type="submit">Update Username</button>
+      </div>
+    </form>
+    <!-- Change Email -->
+    <form method="POST" class="account-form">
+      <div class="account-field">
+        <label>Change Email</label>
+        <input type="email" name="new_email" value="{{ user.get('email', '') }}" required>
+        <button type="submit">Update Email</button>
+      </div>
+    </form>
+    <!-- Change Password -->
+    <form method="POST" class="account-form">
+      <div class="account-field">
+        <label>Change Password</label>
+        <input type="password" name="new_password" minlength="8" required>
+        <button type="submit">Change Password</button>
+      </div>
+    </form>
+    <div class="account-actions">
+      <form method="POST" onsubmit="return confirm('Are you sure you want to delete your account? This cannot be undone!');">
+        <button class="delete-btn" name="delete_account" value="1" type="submit">Delete Account</button>
+      </form>
+      <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </div>
+  </div>
+</body>
+</html>

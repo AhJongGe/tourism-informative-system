@@ -1,27 +1,6 @@
-<!-- place_detail.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>{{ place.name }} | Details</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <style>
-    .place-detail { max-width: 520px; margin: 32px auto; background: #fff; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.11); padding: 32px 28px 28px 28px;}
-    .place-detail img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 12px; }
-    .place-title { font-size: 2rem; font-weight: bold; margin-bottom: 4px;}
-    .place-desc { margin-bottom: 20px; color: #555; }
-    .cat-chips { display: flex; gap: 10px; margin-bottom: 14px; }
-    .chip { background: #f4f4f8; color: #003087; padding: 3px 11px; border-radius: 99px; font-size: 0.95rem; }
-    .section { margin-bottom: 16px; }
-    .section h4 { margin: 0 0 5px 0; font-size: 1.07rem; font-weight: bold;}
-    .hours { color: #233; }
-    .features-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px;}
-    .feature-chip { background: #e5f3ff; color: #116; border-radius: 6px; padding: 2px 8px; font-size: 0.96rem;}
-    .socials a { margin-right: 12px;}
-    .budget { font-weight: bold; color: #077;}
-  </style>
-</head>
-<body>
+{% extends "detail_base.html" %}
+{% block title %}{{ place.name }} | Details{% endblock %}
+{% block content %}
 <div class="place-detail">
   {% if place.photo %}
     <img src="{{ place.photo }}" alt="Photo of {{ place.name }}">
@@ -101,5 +80,4 @@
     </div>
   {% endif %}
 </div>
-</body>
-</html>
+{% endblock %}

@@ -11,7 +11,7 @@ function addMessage(text, sender, containerId, save = true) {
   const img = document.createElement('img');
   img.className = 'profile-pic';
   img.src = sender === "self"
-    ? "/static/images/self.png"
+    ? (typeof USER_PROFILE_PIC !== "undefined" ? USER_PROFILE_PIC : "/static/images/self.png")
     : "/static/images/chatbot.png";
   img.alt = sender === "self" ? "You" : "Assistant";
 
@@ -61,7 +61,6 @@ function clearChatHistory(containerId) {
 // Listen for changes in localStorage (sync tabs/windows/widgets)
 window.addEventListener('storage', function (event) {
   if (event.key === CHAT_STORAGE_KEY) {
-    // You must call restoreChatHistory in BOTH widget and full page!
     if (window.updateAllChatUIs) window.updateAllChatUIs();
   }
 });

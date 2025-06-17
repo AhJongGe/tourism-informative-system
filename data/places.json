@@ -589,7 +589,7 @@
 
   {
     "name": "Sibu Heritage Centre",
-    "category": ["culture","entertainment"],
+    "category": ["entertainment","attraction"],
     "description": "A cultural center showcasing the history and heritage of Sibu.",
     "hours": {
       "mon": "closed",
@@ -610,7 +610,9 @@
       "facebook": "https://www.facebook.com/sibuculturecentre"
     },
     "map link": "https://www.google.com/maps/place/Sibu+Heritage+Centre/@2.2894512,111.8254463,17z/data=!3m1!4b1!4m6!3m5!1s0x31f77fdc114034ad:0xf76389fd20c53c6a!8m2!3d2.2894458!4d111.8280212!16s%2Fg%2F11c61m62st?entry=ttu&g_ep=EgoyMDI1MDYwNC4wIKXMDSoASAFQAw%3D%3D",
-    "photo": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npJWl2-pW_Gu9dHsH9OMah-qrweq1mVpIMj4DCk0xDDmAx3Rf00d9ffXylJpk6tlli3GrYQI43QNkgXkXNqL6RVKN7KOrZSQ387GOiDvHNHXuy7y5w9eRs_pokuS_L1Zo-k5P6Pfg=w408-h306-k-no"
+    "photo": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npJWl2-pW_Gu9dHsH9OMah-qrweq1mVpIMj4DCk0xDDmAx3Rf00d9ffXylJpk6tlli3GrYQI43QNkgXkXNqL6RVKN7KOrZSQ387GOiDvHNHXuy7y5w9eRs_pokuS_L1Zo-k5P6Pfg=w408-h306-k-no",
+    "entertainment_tags":["event","culture","museum"],
+    "attraction_tags":["event","culture","museum"]
   },
   {
     "name":"Masjid An-Nur Sibu",
@@ -666,7 +668,6 @@
       "religion_type":["catholic"]
     }
   },
-
   {
     "name":"Sacred Heart Cathedral",
     "category":["religion"],
@@ -691,6 +692,95 @@
     "photo":"https://www.theborneopost.com/newsimages/2020/06/WhatsApp-Image-2020-06-19-at-15.56.13.jpeg",
     "religion_tags":{
       "religion_type":["catholic"]
+    }
+  },
+  {
+    "name": "Sibu En An Teng Tua Pek Kong Temple",
+    "category":["religion","attraction"],
+    "description":"Late-1800s Taoist temple featuring an iconic 7-tiered pagoda with Chinese-style ornamentation.",
+    "hours":{
+      "mon":"24 hours",
+      "tue":"24 hours",
+      "wed":"24 hours",
+      "thu":"24 hours",
+      "fri":"24 hours",
+      "sat":"24 hours",
+      "sun":"24 hours"
+    },
+    "phone":"+60 84-318 005",
+    "address":"Jln Temple, 96000 Sibu, Sarawak",
+    "accounts":{
+      "facebook":"https://www.facebook.com/engannteng/"
+    },
+    "map link":"https://www.google.com/maps/place/%E8%A9%A9%E5%B7%AB%E6%B0%B8%E5%AE%89%E4%BA%AD%E5%A4%A7%E4%BC%AF%E5%85%AC%E5%BB%9F+Sibu+En+An+Teng+Tua+Pek+Kong+Temple/@2.2870352,111.8236659,17z/data=!4m15!1m8!3m7!1s0x31f77fd93b9d74e9:0xd85ceacb7e0d5e61!2z6Kmp5ber5rC45a6J5Lqt5aSn5Lyv5YWs5bufIFNpYnUgRW4gQW4gVGVuZyBUdWEgUGVrIEtvbmcgVGVtcGxl!8m2!3d2.2870298!4d111.8262408!10e1!16s%2Fm%2F06w75mr!3m5!1s0x31f77fd93b9d74e9:0xd85ceacb7e0d5e61!8m2!3d2.2870298!4d111.8262408!16s%2Fm%2F06w75mr?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+    "photo":"https://lh3.googleusercontent.com/gps-cs-s/AC9h4nrNXJBuYasT3goBeFwnfVs4KnLEBjPgBbcceXo14f83on79ZNm3y6epmbzut4HTDvSb47P4zCZ81QOzIY2yFzwPD5fVCs1ivc9Q7yEkw639geHYe7ayubaMNZ2KOFxq2GvLLn4phw=w408-h543-k-no",
+    "religion_tags":{
+      "religion_type":["buddha"]
+    }
+  },
+  {
+    "name":"Tun Tuanku Bujang Square(Sibu Town Square)",
+    "category":["entertainment","attraction"],
+    "description":"By far the largest town square in Malaysia, mostly for holding special or major events.",
+    "address":"Jln Bujang Suntong, Pekan Sibu, 96000 Sibu, Sarawak",
+    "map link":"https://www.google.com/maps/place/Tun+Tuanku+Bujang+Square(Sibu+Town+Square)/@2.2913325,111.8054015,15z/data=!3m1!4b1!4m6!3m5!1s0x31f77fdb9f88c823:0xe4b2cca7719abeea!8m2!3d2.2913326!4d111.8238557!16s%2Fg%2F11bc70yvwb?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+    "photo":"https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqpR-G2RtlauNT6my_vSyirAgqQPSrxOGYCHOsZHBRgjCtVQ3_XtdR8G6m_MdlcvAYOSGIInFKILUPcBRVrDbRMqxPOqYVU1MGAGH0wYiya32Bj9lzL2a-drgf4OgHzbu04xCOy=w426-h240-k-no",
+    "entertainment_tags": {
+      "venue_type": ["town square"],
+      "features": ["events","landmark"]
+    },
+    "attraction_tags":{
+      "venue_type":["landmark"],
+      "features":["event","landmark"]
+    }
+  },
+  {
+    "name":"Sibu Gateway",
+    "category":["attraction"],
+    "description":"One of the landmarks in Sibu that is a good camera spot",
+    "address":"Jln Kampung Nyabor, Pekan Sibu, 96000 Sibu, Sarawak",
+    "map link":"https://www.google.com/maps/place/Sibu+Gateway/@2.2880512,111.81266,15z/data=!3m1!4b1!4m6!3m5!1s0x31f77fde6a208cc3:0xbe5c905b88f2cea5!8m2!3d2.2880513!4d111.8311142!16s%2Fg%2F1vq72crc?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+    "photo":"https://lh3.googleusercontent.com/gps-cs-s/AC9h4nrBpwf6N3dyzdzpwl7dG_GcOdY4sF5WtK81KJDdTvnI1E4qVNy6oLrzEKGjLVDGxXYFHNYNZ4sBflTSNwRrlpN69YHCKO1y5eIIqp-8yKrzkfZAomvN4Ndgmk3WkQTwWAMjKrZA=w408-h306-k-no",
+    "attraction_tags":["landmark","camera spot"]
+  },
+  {
+    "name":"Wisma Sanyan",
+    "category":["attraction","shopping","service","cuisine"],
+    "description":"A tall building located in the heart of the town Sibu, a management office with a mall below",
+    "hours":{
+      "mon":"10:00-22:00",
+      "tue":"10:00-22:00",
+      "wed":"10:00-22:00",
+      "thu":"10:00-22:00",
+      "fri":"10:00-22:00",
+      "sat":"10:00-22:00",
+      "sun":"10:00-22:00"
+    },
+    "phone":"+60 84-349 772",
+    "address":"1, Jalan Sanyan, Pekan Sibu, 96000 Sibu, Sarawak",
+    "map link":"https://www.google.com/maps/place/Wisma+Sanyan,+Sibu,+Sarawak/@2.2906903,111.8071174,15z/data=!3m1!4b1!4m6!3m5!1s0x31f77fdb77b6fa23:0x62227f5b4211e96!8m2!3d2.2906904!4d111.8255716!16s%2Fg%2F11bc5yb0zx?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+    "photo": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npLI60-R7HQh7QMhoIFeto_qBHtZZbGYLkkz2mpJofzK4vYmzO9i6L8GipR9TpLXFlYiQFQa5Dv3kbLsM-gKpxa8pj_ldvGGIcuD23E4Kph93BwcKINUx4V6k3CHm2_hhcjEqpOkLbJSqEz=w408-h544-k-no",
+    "shopping_tags":{
+      "venue_type": ["shopping complex"],
+      "goods": ["food & beverage","health & beauty","clothing & accessories","electronics & gadgets","hardware & tools","entertainment"],
+      "features": ["parking","wifi","air conditioning","restroom","escalator"],
+      "services": ["phone repair","food court","ATM","security"]
+    },
+    "entertainment_tags": {
+      "venue_type": ["shopping complex"],
+      "features": ["arcade"],
+      "services": ["phone repair","ATM","security"]
+    },
+    "service_tags":{
+      "venue_type":["shopping complex"],
+      "services":["phone repair","ATM","security"]
+    },
+    "cuisine_tags":{
+      "venue_type": ["food court"],
+      "cuisine_type": ["local","chinese","western","malay","dessert","snacks","barbeque","street food"],
+      "food_category": ["main dish", "dessert", "western", "local beverages"],
+      "meal_time": ["breakfast", "lunch", "dinner"],
+      "features": ["air conditioned"]
     }
   }
 ]

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Tourism Malaysia</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
   <!-- Navbar -->
@@ -92,8 +92,14 @@
     <div class="section-title">Religion</div>
     <div class="card-container" id="religion-cards"></div>
   </section>
-  <!-- Optionally include chatbot widget here -->
-  <!-- {% include 'chatbot_widget.html' %} -->
+  {% include 'chatbot_widget.html' %}
+  <script>
+    var USER_PROFILE_PIC = "{{ profile_pic_url|e }}"; 
+  </script>
+
+  <script src="{{ url_for('static', filename='js/chatbot_core.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chatbot_widget.js') }}"></script>
+
   <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

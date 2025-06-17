@@ -5,6 +5,7 @@ import smtplib
 from email.mime.text import MIMEText
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
 import random
 import time
 import json
@@ -12,11 +13,18 @@ from datetime import datetime, timedelta
 import requests
 import difflib
 
+def get_profile_pic_url():
+    email = session.get("email")
+    user = users.get(email) if email else None
+    filename = user.get('profile_pic') if user and user.get('profile_pic') else "default.png"
+    return url_for('static', filename=f'uploads/{filename}')
 
+
+# --- Load places data ---
 with open(os.path.join('data', 'places.json'), 'r', encoding='utf-8') as f:
     PLACES = json.load(f)
 
-# === Load .env and API Keys ===
+# --- Load .env and API Keys ---
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 AZURE_API_KEY = os.getenv("AZURE_API_KEY")
@@ -28,9 +36,9 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = 'your_secret_key'
 
-# In-memory user store and verification codes
-users = {}  # {email: {"username": ..., "password": ...}}
-VERIFICATION_CODES = {}  # {email: {"code": "123456", "timestamp": 1717310000}}
+# --- In-memory user store and verification codes ---
+users = {}  # {email: {"username": ..., "password": ..., "profile_pic": ...}}
+VERIFICATION_CODES = {}  # {email: {"code": "123456", "timestamp": ...}}
 
 def send_email(recipient, subject, body):
     smtp_server = "smtp.gmail.com"
@@ -50,13 +58,10 @@ def is_halal_question(message):
 
 def fuzzy_find_place(message, threshold=0.75):
     msg = message.lower()
-    candidates = []
     for place in PLACES:
-        # Fuzzy match on place name
         ratio = difflib.SequenceMatcher(None, place.get("name", "").lower(), msg).ratio()
         if ratio >= threshold or place.get("name", "").lower() in msg or msg in place.get("name", "").lower():
             return place
-        # Fuzzy match on selected tags/keywords
         for key, value in place.items():
             if isinstance(value, bool) and value:
                 if key.replace("_", " ") in msg or key in msg:
@@ -112,22 +117,20 @@ def get_today_status(place):
     now = datetime.now(tz)
     days = ['mon','tue','wed','thu','fri','sat','sun']
     today = days[now.weekday()]
-
     hours = place.get('hours', {})
     today_hours = hours.get(today)
     if not today_hours or today_hours.lower() == "closed":
         return ("closed", None, None)
-
+    h = today_hours.strip().lower()
+    if h in ["24 hours", "open 24 hours", "24h", "00:00-23:59", "00:00-00:00", "全天", "24小时"]:
+        return ("open", None, today_hours)
     open_str, close_str = today_hours.split('-')
     open_hour, open_min = map(int, open_str.strip().split(':'))
     close_hour, close_min = map(int, close_str.strip().split(':'))
-
     open_time = now.replace(hour=open_hour, minute=open_min, second=0, microsecond=0)
     close_time = now.replace(hour=close_hour, minute=close_min, second=0, microsecond=0)
-    # Handle after midnight closing (eg, close_time < open_time)
     if close_time <= open_time:
         close_time += timedelta(days=1)
-
     if now < open_time:
         diff = (open_time - now).total_seconds() // 60
         if diff < 60:
@@ -143,20 +146,90 @@ def get_today_status(place):
     else:
         return ("closed", None, today_hours)
 
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# --- Account page (edit profile, password, email, profile pic, delete) ---
+@app.route('/account', methods=['GET', 'POST'])
+def account_page():
+    email = session.get("email")
+    if not email or email not in users:
+        return redirect(url_for("login_page"))
+    user = users[email]
+    msg = ""
+    if request.method == "POST":
+        # Edit username
+        if 'username' in request.form:
+            user['username'] = request.form.get("username", user['username'])
+        # Change email
+        if 'new_email' in request.form:
+            new_email = request.form.get("new_email").strip().lower()
+            if new_email and new_email != email and new_email not in users:
+                users[new_email] = users.pop(email)
+                session["email"] = new_email
+                email = new_email
+                user = users[email]
+                msg = "Email updated successfully."
+            else:
+                msg = "Invalid or duplicate email."
+        # Change password
+        if 'new_password' in request.form:
+            pw = request.form.get("new_password")
+            if pw and len(pw) >= 8:
+                user['password'] = pw
+                msg = "Password updated."
+            else:
+                msg = "Password must be at least 8 characters."
+        # Upload profile picture
+        if 'profile_pic' in request.files:
+            file = request.files['profile_pic']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(f"{email}_{file.filename}")
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                user['profile_pic'] = filename
+                msg = "Profile picture updated."
+        # Delete account
+        if "delete_account" in request.form:
+            users.pop(email, None)
+            session.pop("email", None)
+            return redirect(url_for("mainpage"))
+    profile_pic_url = get_profile_pic_url()
+    return render_template('account.html', user=user, profile_pic_url=profile_pic_url, msg=msg)
+    
+
+# --- Logout route ---
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login_page'))
+
+# --- Chatbot page, with profile pic passed in ---
+@app.route('/chatbot')
+def chatbot_page():
+    email = session.get("email")
+    user = users.get(email) if email else None
+    profile_pic = user.get('profile_pic') if user else "default.png"
+    return render_template('chatbot.html', profile_pic_url=url_for('static', filename=f'uploads/{profile_pic}'))
+
+# --- Registration/Login/Reset/Other APIs unchanged ---
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
     email = data.get('email')
     username = data.get('username')
     password = data.get('password')
-    # Validation
     if not email or not username or not password:
         return jsonify({"success": False, "message": "Missing fields"}), 400
     if len(password) < 8:
         return jsonify({"success": False, "message": "Password must be at least 8 characters."}), 400
     if email in users:
         return jsonify({"success": False, "message": "Email already registered."}), 400
-    # Register the user
     users[email] = {"username": username, "password": password}
     return jsonify({"success": True, "message": "Account created"})
 
@@ -173,7 +246,6 @@ def send_verification():
         return jsonify({"success": False, "message": "Invalid email"}), 400
     if email not in users:
         return jsonify({"success": False, "message": "Email not registered."}), 404
-
     code = f"{random.randint(100000, 999999)}"
     VERIFICATION_CODES[email] = {
         "code": code,
@@ -186,7 +258,6 @@ def send_verification():
             body=f"Your verification code is: {code}"
         )
     except Exception as e:
-        # For production, consider logging this instead of printing
         print(f"Failed to send email: {e!r}")
         return jsonify({"success": False, "message": "Failed to send email."}), 500
     return jsonify({"success": True, "message": "Verification code sent"})
@@ -195,8 +266,6 @@ def send_verification():
 def chat():
     data = request.get_json()
     user_message = data.get('message', '')
-
-    # 1. Halal question gets highest priority, dataset only
     if is_halal_question(user_message):
         place = fuzzy_find_place(user_message)
         if place:
@@ -204,19 +273,13 @@ def chat():
             return jsonify({"reply": reply})
         else:
             return jsonify({"reply": "Sorry, I don't have halal status information for that place."})
-
-    # 2. Try to find a matching place in your database (with fuzzy matching)
     place = fuzzy_find_place(user_message)
     if place:
         reply = make_place_reply(place)
         return jsonify({"reply": reply})
-
-    # 3. Try Azure Search for anything not in your local dataset
     azure_answer = search_azure(user_message)
     if azure_answer:
         return jsonify({"reply": f"{azure_answer}\n(Source: web search)"})
-
-    # 4. Final fallback: OpenAI GPT-4o
     try:
         client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         response = client.chat.completions.create(
@@ -248,11 +311,10 @@ def verify_code():
         return jsonify({"success": False, "message": "Verification code expired"}), 400
     if code != info["code"]:
         return jsonify({"success": False, "message": "Incorrect code"}), 400
-    # Mark this code as used (remove)
     VERIFICATION_CODES.pop(email, None)
     session["reset_email"] = email
     return jsonify({"success": True})
-    
+
 @app.route('/reset_pw', methods=['GET', 'POST'])
 def reset_pw_page():
     if request.method == 'POST':
@@ -274,10 +336,9 @@ def api_places():
         data = json.load(f)
     return jsonify(data)
 
-# Example main routes (fill in your own templates as needed)
 @app.route('/')
 def mainpage():
-    return render_template('mainpage.html')
+    return render_template('mainpage.html', profile_pic_url=get_profile_pic_url())
 
 @app.route('/login')
 def login_page():
@@ -289,11 +350,10 @@ def signup_page():
 
 @app.route('/userpage')
 def user_page():
-    return render_template('userpage.html')
-
-@app.route('/chatbot')
-def chatbot_page():
-    return render_template('chatbot.html')
+    return render_template(
+        'userpage.html',
+        profile_pic_url=get_profile_pic_url()
+    )
 
 @app.route('/place_detail/<slug>')
 def place_detail(slug):
@@ -310,7 +370,6 @@ def place_detail(slug):
             .replace(",", "")
             .replace(" ", "-")
         )
-    # Find place with matching slug
     for place in PLACES:
         if slugify(place["name"]) == slug:
             status, minutes, today_hours = get_today_status(place)
@@ -319,7 +378,8 @@ def place_detail(slug):
                 place=place,
                 today_status=status,
                 today_minutes=minutes,
-                today_hours=today_hours
+                today_hours=today_hours,
+                profile_pic_url=get_profile_pic_url()
             )
     return "Place not found", 404
 
@@ -340,11 +400,10 @@ def section_page(page):
         return render_template(
             'category_base.html',
             section_category=CATEGORY_PAGES[page],
-            title=page.capitalize()
+            title=page.capitalize(),
+            profile_pic_url=get_profile_pic_url()
         )
-    # fallback: 404 or other logic
     return "Page not found", 404
-
 
 @app.route('/admin_login')
 def admin_login_page():
@@ -357,10 +416,6 @@ def admin_accounts_page():
 @app.route('/forgot_pw')
 def forgot_pw_page():
     return render_template('forgot_pw.html')
-
-@app.route('/account')
-def account_page():
-    return render_template('account.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

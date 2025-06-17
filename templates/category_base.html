@@ -39,9 +39,13 @@
   <div class="end-marker">--------------- · ---------------</div>
 
   {% block extra_scripts %}{% endblock %}
+  {% include 'chatbot_widget.html' %}
   <script>
     window.SECTION_CATEGORY = "{{ section_category }}";
+    var USER_PROFILE_PIC = "{{ profile_pic_url|e }}";
   </script>
+  <script src="{{ url_for('static', filename='js/chatbot_core.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chatbot_widget.js') }}"></script>
   <script src="{{ url_for('static', filename='js/category.js') }}"></script>
 </body>
 </html>
