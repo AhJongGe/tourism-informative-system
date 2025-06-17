@@ -323,37 +323,28 @@ def place_detail(slug):
             )
     return "Place not found", 404
 
-@app.route('/accomodation')
-def accomodation_page():
-    return render_template('accomodation.html')
+CATEGORY_PAGES = {
+    "cuisines": "cuisine",
+    "shopping": "shopping",
+    "attractions": "attractions",
+    "entertainment": "entertainment",
+    "transport": "transport",
+    "services": "services",
+    "religion": "religion",
+    "accomodation": "accomodation"
+}
 
-@app.route('/attractions')
-def attractions_page():
-    return render_template('attractions.html')
+@app.route('/<page>')
+def section_page(page):
+    if page in CATEGORY_PAGES:
+        return render_template(
+            'category_base.html',
+            section_category=CATEGORY_PAGES[page],
+            title=page.capitalize()
+        )
+    # fallback: 404 or other logic
+    return "Page not found", 404
 
-@app.route('/cuisines')
-def cuisines_page():
-    return render_template('cuisines.html')
-
-@app.route('/entertainment')
-def entertainment_page():
-    return render_template('entertainment.html')
-
-@app.route('/religion')
-def religion_page():
-    return render_template('religion.html')
-
-@app.route('/services')
-def services_page():
-    return render_template('services.html')
-
-@app.route('/shopping')
-def shopping_page():
-    return render_template('shopping.html')
-
-@app.route('/transport')
-def transport_page():
-    return render_template('transport.html')
 
 @app.route('/admin_login')
 def admin_login_page():

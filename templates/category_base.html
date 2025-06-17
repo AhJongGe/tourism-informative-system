@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Section{% endblock %} | Tourism Malaysia</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/category.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/timezone.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/utc.js"></script>
+  <script>
+    dayjs.extend(dayjs_plugin_utc);
+    dayjs.extend(dayjs_plugin_timezone);
+  </script>
+</head>
+<body>
+  <div class="navbar">
+    <button class="return-btn" onclick="window.history.back()">
+      <img src="{{ url_for('static', filename='images/return.png') }}" alt="Return">
+    </button>
+    <div class="search-bar-container">
+      <img src="{{ url_for('static', filename='images/search.png') }}" class="search-icon">
+      <input type="text" id="main-search" autocomplete="off">
+    </div>
+    <button class="filter-btn" id="filterBtn">
+      <img src="{{ url_for('static', filename='images/filter.png') }}" alt="Filter">
+    </button>
+  </div>
+  <!-- Megamenu Filter -->
+  <div class="megamenu" id="megamenu">
+    <div class="megamenu-search">
+      <img src="{{ url_for('static', filename='images/search.png') }}" class="search-icon">
+      <input type="text" id="label-search" placeholder="Search labels..." autocomplete="off">
+    </div>
+    <div class="chosen-labels" id="chosen-labels"></div>
+    <div class="all-labels" id="all-labels"></div>
+  </div>
+  <!-- Cards -->
+  <div class="card-container" id="card-container"></div>
+  <div class="end-marker">--------------- · ---------------</div>
+
+  {% block extra_scripts %}{% endblock %}
+  <script>
+    window.SECTION_CATEGORY = "{{ section_category }}";
+  </script>
+  <script src="{{ url_for('static', filename='js/category.js') }}"></script>
+</body>
+</html>

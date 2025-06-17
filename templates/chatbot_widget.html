@@ -1,0 +1,26 @@
+<!-- --- Floating Chatbot Widget --- -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot_widget.css') }}">
+<div id="chatbot-widget-container">
+  <button id="chatbot-float-btn" title="Open AI Assistant">
+    <img src="{{ url_for('static', filename='images/chatbot_btn.png') }}" alt="chatbot">
+  </button>
+  <div id="chatbot-window">
+    <div class="draggable-bar">
+      <span class="draggable-title">AI Assistant</span>
+      <button class="draggable-close" type="button" title="Close">&times;</button>
+    </div>
+    <div style="padding:10px 0 0 0; font-size:15px; text-align:center; font-weight:bold; color:#2a2a2a;">
+      Tourism Chatbot
+    </div>
+    <button class="clear-chat-btn-widget" type="button">Clear</button>
+    <div id="chatbot-messages-widget"></div>
+    <form id="chatbot-input-area-widget" autocomplete="off">
+      <div style="display:flex;align-items:center;background:#f6f6f6;border-radius:999px;padding:0 16px;width:82%;max-width:500px;min-width:120px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid #ececec;">
+        <input type="text" placeholder="Message..." id="widget-msg" autocomplete="off" />
+        <button type="submit"><svg viewBox="0 0 24 24"><path d="M2 21l21-9-21-9v7l15 2-15 2z"/></svg></button>
+      </div>
+    </form>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='js/chatbot_core.js') }}"></script>
+<script src="{{ url_for('static', filename='js/chatbot_widget.js') }}"></script>
