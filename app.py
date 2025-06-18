@@ -6,23 +6,14 @@ from email.mime.text import MIMEText
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 import random
 import time
 import json
 from datetime import datetime, timedelta
 import requests
 import difflib
-
-def get_profile_pic_url():
-    email = session.get("email")
-    user = users.get(email) if email else None
-    filename = user.get('profile_pic') if user and user.get('profile_pic') else "default.png"
-    return url_for('static', filename=f'uploads/{filename}')
-
-
-# --- Load places data ---
-with open(os.path.join('data', 'places.json'), 'r', encoding='utf-8') as f:
-    PLACES = json.load(f)
+from flask_sqlalchemy import SQLAlchemy
 
 # --- Load .env and API Keys ---
 load_dotenv()
@@ -36,9 +27,35 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = 'your_secret_key'
 
-# --- In-memory user store and verification codes ---
-users = {}  # {email: {"username": ..., "password": ..., "profile_pic": ...}}
-VERIFICATION_CODES = {}  # {email: {"code": "123456", "timestamp": ...}}
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+db = SQLAlchemy(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    username = db.Column(db.String(80), nullable=False)
+    password = db.Column(db.String(120), nullable=False)
+    profile_pic = db.Column(db.String(120), default='default.png')
+
+with app.app_context():
+    db.create_all()
+
+VERIFICATION_CODES = {}
+
+# --- Load places data ---
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PLACES_PATH = os.path.join(BASE_DIR, 'data', 'places.json')
+with open(PLACES_PATH, 'r', encoding='utf-8') as f:
+    PLACES = json.load(f)
+
+def get_profile_pic_url():
+    email = session.get("email")
+    user = User.query.filter_by(email=email).first() if email else None
+    filename = user.profile_pic if user and user.profile_pic else "default.png"
+    if filename == "default.png":
+        return url_for('static', filename='images/default.png')
+    else:
+        return url_for('static', filename=f'uploads/{filename}')
 
 def send_email(recipient, subject, body):
     smtp_server = "smtp.gmail.com"
@@ -159,50 +176,61 @@ def allowed_file(filename):
 @app.route('/account', methods=['GET', 'POST'])
 def account_page():
     email = session.get("email")
-    if not email or email not in users:
+    if not email:
         return redirect(url_for("login_page"))
-    user = users[email]
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        session.pop("email", None)
+        return redirect(url_for("login_page"))
     msg = ""
     if request.method == "POST":
-        # Edit username
-        if 'username' in request.form:
-            user['username'] = request.form.get("username", user['username'])
-        # Change email
-        if 'new_email' in request.form:
-            new_email = request.form.get("new_email").strip().lower()
-            if new_email and new_email != email and new_email not in users:
-                users[new_email] = users.pop(email)
-                session["email"] = new_email
-                email = new_email
-                user = users[email]
-                msg = "Email updated successfully."
-            else:
-                msg = "Invalid or duplicate email."
-        # Change password
-        if 'new_password' in request.form:
-            pw = request.form.get("new_password")
-            if pw and len(pw) >= 8:
-                user['password'] = pw
-                msg = "Password updated."
-            else:
-                msg = "Password must be at least 8 characters."
-        # Upload profile picture
-        if 'profile_pic' in request.files:
-            file = request.files['profile_pic']
-            if file and allowed_file(file.filename):
-                filename = secure_filename(f"{email}_{file.filename}")
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                user['profile_pic'] = filename
-                msg = "Profile picture updated."
-        # Delete account
-        if "delete_account" in request.form:
-            users.pop(email, None)
-            session.pop("email", None)
-            return redirect(url_for("mainpage"))
+        try:
+            # Edit username
+            if 'username' in request.form:
+                user.username = request.form.get("username", user.username)
+                db.session.commit()
+                msg = "Username updated."
+            # Change email
+            if 'new_email' in request.form:
+                new_email = request.form.get("new_email").strip().lower()
+                if new_email and new_email != email and not User.query.filter_by(email=new_email).first():
+                    user.email = new_email
+                    db.session.commit()
+                    session["email"] = new_email
+                    email = new_email
+                    msg = "Email updated successfully."
+                else:
+                    msg = "Invalid or duplicate email."
+            # Change password
+            if 'new_password' in request.form:
+                pw = request.form.get("new_password")
+                if pw and is_secure_password(pw):
+                    user.password = generate_password_hash(pw)
+                    db.session.commit()
+                    msg = "Password updated."
+                else:
+                    msg = "Password must be at least 8 characters and include both letters and numbers."
+            # Upload profile picture
+            if 'profile_pic' in request.files:
+                file = request.files['profile_pic']
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(f"{email}_{file.filename}")
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    user.profile_pic = filename
+                    db.session.commit()
+                    msg = "Profile picture updated."
+            # Delete account
+            if "delete_account" in request.form:
+                db.session.delete(user)
+                db.session.commit()
+                session.pop("email", None)
+                return redirect(url_for("mainpage"))
+        except Exception as e:
+            print("Account update error:", e)
+            msg = f"Error: {e}"
     profile_pic_url = get_profile_pic_url()
     return render_template('account.html', user=user, profile_pic_url=profile_pic_url, msg=msg)
     
-
 # --- Logout route ---
 @app.route('/logout')
 def logout():
@@ -213,30 +241,96 @@ def logout():
 @app.route('/chatbot')
 def chatbot_page():
     email = session.get("email")
-    user = users.get(email) if email else None
-    profile_pic = user.get('profile_pic') if user else "default.png"
+    user = User.query.filter_by(email=email).first() if email else None
+    profile_pic = user.profile_pic if user and user.profile_pic else "default.png"
     return render_template('chatbot.html', profile_pic_url=url_for('static', filename=f'uploads/{profile_pic}'))
 
 # --- Registration/Login/Reset/Other APIs unchanged ---
-@app.route('/register', methods=['POST'])
-def register():
-    data = request.get_json()
-    email = data.get('email')
-    username = data.get('username')
-    password = data.get('password')
-    if not email or not username or not password:
-        return jsonify({"success": False, "message": "Missing fields"}), 400
-    if len(password) < 8:
-        return jsonify({"success": False, "message": "Password must be at least 8 characters."}), 400
-    if email in users:
-        return jsonify({"success": False, "message": "Email already registered."}), 400
-    users[email] = {"username": username, "password": password}
-    return jsonify({"success": True, "message": "Account created"})
+def is_secure_password(pw):
+    return (
+        len(pw) >= 8 and
+        re.search(r"[A-Za-z]", pw) and
+        re.search(r"\d", pw)
+    )
+
+@app.route('/login_page')
+def login_page():
+    return render_template('login.html')
 
 @app.route('/api/login', methods=['POST'])
 def api_login():
-    # login logic here
-    return jsonify(success=True)
+    data = request.get_json()
+    email = data.get('email', '').strip().lower()
+    password = data.get('password', '')
+
+    # Find user by email
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({'success': False, 'message': 'Invalid email or password.'}), 401
+
+    # Check hashed password
+    if not check_password_hash(user.password, password):
+        return jsonify({'success': False, 'message': 'Invalid email or password.'}), 401
+
+    # Login successful: set session or return token as needed
+    session['email'] = user.email  # or any other session management you want
+
+    # Optionally, redirect after login (your frontend handles this)
+    return jsonify({'success': True, 'redirect': '/userpage'})
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register_page():
+    print("is_json:", request.is_json)
+    print("content-type:", request.headers.get("Content-Type"))
+    if request.method == 'POST':
+        try:
+            if request.is_json:
+                data = request.get_json()
+                email = data.get('email', '').strip().lower()
+                username = data.get('username', '').strip()
+                password = data.get('password', '')
+            else:
+                email = request.form.get('email', '').strip().lower()
+                username = request.form.get('username', '').strip()
+                password = request.form.get('password', '')
+
+            if not email or not username or not password:
+                msg = "Missing fields"
+                if request.is_json:
+                    return jsonify({"success": False, "message": msg})
+                return render_template('signup.html', error=msg)
+
+            if not is_secure_password(password):
+                msg = "Password must be at least 8 characters and include both letters and numbers."
+                if request.is_json:
+                    return jsonify({"success": False, "message": msg})
+                return render_template('signup.html', error=msg)
+
+            if User.query.filter_by(email=email).first():
+                msg = "Email already registered."
+                if request.is_json:
+                    return jsonify({"success": False, "message": msg})
+                return render_template('signup.html', error=msg)
+
+            hashed_pw = generate_password_hash(password)
+            user = User(email=email, username=username, password=hashed_pw)
+            db.session.add(user)
+            db.session.commit()
+            session['email'] = email
+
+            if request.is_json:
+                return jsonify({"success": True})
+            return redirect(url_for('account_page'))
+
+        except Exception as e:
+            msg = f"Registration error: {e}"
+            print(msg)
+            if request.is_json:
+                return jsonify({"success": False, "message": msg})
+            return render_template('signup.html', error=msg)
+
+    return render_template('signup.html')
 
 @app.route('/api/send_verification', methods=['POST'])
 def send_verification():
@@ -244,7 +338,8 @@ def send_verification():
     email = data.get("email")
     if not email or '@' not in email:
         return jsonify({"success": False, "message": "Invalid email"}), 400
-    if email not in users:
+    user = User.query.filter_by(email=email).first()
+    if not user:
         return jsonify({"success": False, "message": "Email not registered."}), 404
     code = f"{random.randint(100000, 999999)}"
     VERIFICATION_CODES[email] = {
@@ -322,9 +417,13 @@ def reset_pw_page():
         email = session.get("reset_email")
         if not email or not new_pw:
             return redirect(url_for('login_page'))
-        if len(new_pw) < 8:
-            return render_template('reset_pw.html', error="Password must be at least 8 characters.")
-        users[email]['password'] = new_pw
+        if not is_secure_password(new_pw):
+            return render_template('reset_pw.html', error="Password must be at least 8 characters and include both letters and numbers.")
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return redirect(url_for('login_page'))
+        user.password = generate_password_hash(new_pw)
+        db.session.commit()
         session.pop("reset_email", None)
         return redirect(url_for('login_page'))
     return render_template('reset_pw.html')
@@ -339,10 +438,6 @@ def api_places():
 @app.route('/')
 def mainpage():
     return render_template('mainpage.html', profile_pic_url=get_profile_pic_url())
-
-@app.route('/login')
-def login_page():
-    return render_template('login.html')
 
 @app.route('/signup')
 def signup_page():

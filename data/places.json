@@ -309,7 +309,7 @@
 
   {
     "name": "Sibu Night Market",
-    "category": ["cuisine", "shopping"],
+    "category": ["cuisine", "shopping","attractions"],
     "description": "A vibrant night market offering a variety of local foods and crafts.",
     "hours": {
       "mon": "16:30-21:00",
@@ -428,7 +428,7 @@
   
   {
     "name": "Sibu Central Market",
-    "category": ["shopping"],
+    "category": ["shopping","attractions"],
     "description": "Currently the largest market in Southeast Asia, offering fresh produce and local delicacies.",
     "hours": {
       "mon": "06:00-18:00",
@@ -589,7 +589,7 @@
 
   {
     "name": "Sibu Heritage Centre",
-    "category": ["entertainment","attraction"],
+    "category": ["entertainment","attractions"],
     "description": "A cultural center showcasing the history and heritage of Sibu.",
     "hours": {
       "mon": "closed",
@@ -612,7 +612,10 @@
     "map link": "https://www.google.com/maps/place/Sibu+Heritage+Centre/@2.2894512,111.8254463,17z/data=!3m1!4b1!4m6!3m5!1s0x31f77fdc114034ad:0xf76389fd20c53c6a!8m2!3d2.2894458!4d111.8280212!16s%2Fg%2F11c61m62st?entry=ttu&g_ep=EgoyMDI1MDYwNC4wIKXMDSoASAFQAw%3D%3D",
     "photo": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npJWl2-pW_Gu9dHsH9OMah-qrweq1mVpIMj4DCk0xDDmAx3Rf00d9ffXylJpk6tlli3GrYQI43QNkgXkXNqL6RVKN7KOrZSQ387GOiDvHNHXuy7y5w9eRs_pokuS_L1Zo-k5P6Pfg=w408-h306-k-no",
     "entertainment_tags":["event","culture","museum"],
-    "attraction_tags":["event","culture","museum"]
+    "attractions_tags":{
+      "venue type":["museum"],
+      "features":["event","culture"]
+    }
   },
   {
     "name":"Masjid An-Nur Sibu",
@@ -696,7 +699,7 @@
   },
   {
     "name": "Sibu En An Teng Tua Pek Kong Temple",
-    "category":["religion","attraction"],
+    "category":["religion","attractions"],
     "description":"Late-1800s Taoist temple featuring an iconic 7-tiered pagoda with Chinese-style ornamentation.",
     "hours":{
       "mon":"24 hours",
@@ -720,7 +723,7 @@
   },
   {
     "name":"Tun Tuanku Bujang Square(Sibu Town Square)",
-    "category":["entertainment","attraction"],
+    "category":["entertainment","attractions"],
     "description":"By far the largest town square in Malaysia, mostly for holding special or major events.",
     "address":"Jln Bujang Suntong, Pekan Sibu, 96000 Sibu, Sarawak",
     "map link":"https://www.google.com/maps/place/Tun+Tuanku+Bujang+Square(Sibu+Town+Square)/@2.2913325,111.8054015,15z/data=!3m1!4b1!4m6!3m5!1s0x31f77fdb9f88c823:0xe4b2cca7719abeea!8m2!3d2.2913326!4d111.8238557!16s%2Fg%2F11bc70yvwb?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
@@ -729,23 +732,26 @@
       "venue_type": ["town square"],
       "features": ["events","landmark"]
     },
-    "attraction_tags":{
+    "attractions_tags":{
       "venue_type":["landmark"],
       "features":["event","landmark"]
     }
   },
   {
     "name":"Sibu Gateway",
-    "category":["attraction"],
+    "category":["attractions"],
     "description":"One of the landmarks in Sibu that is a good camera spot",
     "address":"Jln Kampung Nyabor, Pekan Sibu, 96000 Sibu, Sarawak",
     "map link":"https://www.google.com/maps/place/Sibu+Gateway/@2.2880512,111.81266,15z/data=!3m1!4b1!4m6!3m5!1s0x31f77fde6a208cc3:0xbe5c905b88f2cea5!8m2!3d2.2880513!4d111.8311142!16s%2Fg%2F1vq72crc?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
     "photo":"https://lh3.googleusercontent.com/gps-cs-s/AC9h4nrBpwf6N3dyzdzpwl7dG_GcOdY4sF5WtK81KJDdTvnI1E4qVNy6oLrzEKGjLVDGxXYFHNYNZ4sBflTSNwRrlpN69YHCKO1y5eIIqp-8yKrzkfZAomvN4Ndgmk3WkQTwWAMjKrZA=w408-h306-k-no",
-    "attraction_tags":["landmark","camera spot"]
+    "attractions_tags":{
+      "venue type":["public space"],
+      "features":["camera spot","landmark"]
+    }
   },
   {
     "name":"Wisma Sanyan",
-    "category":["attraction","shopping","service","cuisine"],
+    "category":["attractions","shopping","service","cuisine"],
     "description":"A tall building located in the heart of the town Sibu, a management office with a mall below",
     "hours":{
       "mon":"10:00-22:00",
@@ -781,6 +787,156 @@
       "food_category": ["main dish", "dessert", "western", "local beverages"],
       "meal_time": ["breakfast", "lunch", "dinner"],
       "features": ["air conditioned"]
+    }
+  },
+  {
+    "name":"Tanahmas Hotel",
+    "category":["accomodation"],
+    "description":"One of the 3 star hotel located in the central of the Sibu",
+    "phone":"+60 84-333 188",
+    "address":"Lot 277, 5, Jln Kampung Nyabor, Sibu, 96000 Sibu, Sarawak",
+    "lat":2.288348593127324,
+    "lng":111.83022267396434,
+    "accounts":{
+      "website":"https://www.tanahmas.com.my/",
+      "facebook":"https://www.facebook.com/people/Tanahmas-Hotel/61561569734439/",
+      "instagram":"https://www.instagram.com/tanahmas_hotel/"
+    },
+    "map link":"https://www.google.com/maps/place/Tanahmas+Hotel/@2.2880388,111.8276973,17z/data=!3m1!4b1!4m9!3m8!1s0x31f77fde63def5c3:0xb608fabd17569925!5m2!4m1!1i2!8m2!3d2.2880388!4d111.8302722!16s%2Fg%2F1tfvqh34?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+    "photo":"https://lh3.googleusercontent.com/p/AF1QipPPw2uzS20081yw043dFIB5bDJ9WaMSSkxqRT9y=w408-h306-k-no",
+    "accomodation_tags":{
+      "accomodation_type":["hotel"],
+      "star rating":["3✦"]
+    }
+  },
+
+  {
+    "name":"Starlink Hotel",
+    "category":["accomodation"],
+    "description":"One of the 3 star hotel located near to the one of the most popular mall in Sibu, Star Mega Mall",
+    "phone":"+60 84-221 666",
+    "address":"2C, 13, Lorong Tunku Abdul Rahman 8A, Sibu, 96000 Sibu, Sarawak",
+    "lat":"2.3060642591010923",
+    "lng":"111.86162299766607",
+    "accounts":{
+      "website":"https://starlink.hotelsinsarawak.com/en/"
+    },
+    "map link":"https://www.google.com/maps/place/Starlink+Hotel/@2.2948292,111.8207641,14z/data=!4m20!1m10!3m9!1s0x31f781344d9fed31:0x82771d3587a2767f!2sStarlink+Hotel!5m2!4m1!1i2!8m2!3d2.3042658!4d111.8616855!16s%2Fg%2F11pg9clq73!3m8!1s0x31f781344d9fed31:0x82771d3587a2767f!5m2!4m1!1i2!8m2!3d2.3042658!4d111.8616855!16s%2Fg%2F11pg9clq73?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+    "photo":"https://lh3.googleusercontent.com/p/AF1QipMXYXH5Ldg0LRl5qNjp87g8go6YIMCbqkp39FQk=w426-h240-k-no",
+    "accomodation_tags":{
+      "accomodation_type":["hotel"],
+      "star rating":["3✦"]
+    }
+  },
+  {
+    "name":"RH HOTEL Sibu",
+    "category":["accomodation"],
+    "description":"4 star hotel located in Sibu central",
+    "phone":"+60 84-365 888",
+    "address":"Jln Kampung Nyabor, Pekan Sibu, 96000 Sibu, Sarawak",
+    "lat":2.2919069241369376,
+    "lng":111.82548768458311,
+    "accounts":{
+      "website":"https://www.rhhotels.com.my/",
+      "instagram":"https://www.instagram.com/rhhotelsibu_sarawak/?hl=en"
+    },
+    "map link":"https://www.google.com/maps/place/RH+HOTEL+(4+Star)/@2.2917247,111.8231486,17.25z/data=!4m9!3m8!1s0x31f77fdc3fa2e4ed:0xfa888fe23c71ef1d!5m2!4m1!1i2!8m2!3d2.2915746!4d111.8255306!16s%2Fg%2F1wfvk5py?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+    "photo":"https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.agoda.com%2Fen-au%2Frh-hotel-sibu%2Fhotel%2Fsibu-my.html&psig=AOvVaw1kp9CLQOuTEhKG3llPUO9y&ust=1750312133758000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCLDnhPqi-o0DFQAAAAAdAAAAABAE",
+    "accomodation_tags":{
+      "accomodation_type":["hotel"],
+      "star rating":["4✦"]
+    }
+  },
+
+  {
+    "name":"The Paramount Hotel",
+    "category":["accomodation"],
+    "description":"a 3 star hotel located in Sibu Central",
+    "phone":"+60 84-331 122",
+    "address":"No. 3, Lorong Kampung DatU 9A, Kampong Dato, Sibu, 96000 Sibu, Sarawak",
+    "lat":2.2941681853492097,
+    "lng":111.82134944287061,
+    "accounts":{
+      "website":"https://paramounthotelsibu.com/",
+      "facebook":"https://www.facebook.com/TheParamountHotelSibu/"
+    },
+    "map link":"https://www.google.com/maps/place/The+Paramount+Hotel/@2.2932678,111.802509,15z/data=!4m10!3m9!1s0x31f77f90e54873dd:0x169d4d154daf9848!5m3!1s2025-06-20!4m1!1i2!8m2!3d2.2932679!4d111.8209632!16s%2Fg%2F1hc2y3mdf?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+    "photo":"https://lh3.googleusercontent.com/gps-proxy/ALd4DhFnFj72MIT6lZJTRafA_qhrMgvxTUaszbF9r1aJHAJwEnv86THEkn6xA-99XeUIVmutxxmDuVNH99t292OKinrbVeCPTXYpQJHZfIUpOBgybe48AoE-ArtBIA29cRHvwhnqSj7q_2WQX989TRCdbxKccXtgonD1ZNncAcfQjytOccPjYcEFr5ce=w408-h306-k-no",
+    "accomodation_tags":{
+      "accomodation_type":["hotel"],
+      "star rating":["3✦"]
+    }
+  },
+  {
+    "name":"OYO 89456 V Motel",
+    "category":["accomodation"],
+    "description":"a budget motel for a good rest",
+    "phone":"+603-5037 8296",
+    "address":"Lot 1519, Jalan Bako, Persiaran Brooke, 96000 Sibu, Sarawak",
+    "lat":2.2941473457581547,
+    "lng":111.82820281079997,
+    "accounts":{
+      "website":"https://www.oyorooms.com/my/82544/",
+      "facebook":"https://www.facebook.com/vmotels/"
+    },
+    "map link":"https://www.google.com/maps/place/OYO+89456+V+Motel/@2.2933327,111.8099633,15z/data=!4m17!1m5!2m4!1sHotels!5m2!5m1!1s2025-06-20!3m10!1s0x31f77fc34bb6fb03:0xf08eabe1d699db78!5m3!1s2025-06-20!4m1!1i2!8m2!3d2.2933327!4d111.8279877!15sCgZIb3RlbHOSAQVob3RlbKoBOhABKgoiBmhvdGVscygAMh4QASIainsixGVQ51rDIRxGAWYdQunD1rZjbCyu2qAyChACIgZob3RlbHPgAQA!16s%2Fg%2F11j0bnkdky?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+    "photo":"https://res.klook.com/klook-hotel/image/upload/fl_lossy.progressive,c_fill,f_auto,w_750,q_85/s2pix8/hotelImages/29378354/0/a76fd07bce80ff389aa6676018ebad3f.png",
+    "accomodation_tags":{
+      "accomodation_type":["motel"],
+      "star rating":["2✦"]
+    }
+  },
+  {
+    "name":"Sibu Boardgames Hobby Club",
+    "category":["accomodation"],
+    "description":"A board game club that introduces different board games and minigames",
+    "hours":{
+      "mon":"13:00-21:00",
+      "tue":"closed",
+      "wed":"13:00-21:00",
+      "thu":"13:00:21:00",
+      "fri":"13:00:21:00",
+      "sat":"13:00:22:00",
+      "sun":"13:00:22:00"
+    },
+    "phone":"+60 16-860 7741",
+    "address":"NO17 1F, Jalan Ramin, Pekan Sibu, 96000 Sibu, Sarawak",
+    "lat":2.2911900388078568,
+    "lng":111.82661187086401,
+    "accounts":{
+      "facebook":"https://www.facebook.com/sibuboardgames",
+      "instagram":"https://www.instagram.com/sibuboardgames/?hl=en"
+    },
+    "map link":"https://www.google.com/maps/place/%E8%AF%97%E5%B7%AB%E6%A1%8C%E6%B8%B8%E7%A4%BE+Sibu+Boardgames+Hobby+Club/@2.2910614,111.8240477,17z/data=!3m1!4b1!4m6!3m5!1s0x31f77fa734b86f15:0x1eb40a8c5e5a9549!8m2!3d2.2910614!4d111.8266226!16s%2Fg%2F11s50kpngr?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+    "photo":"https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqEatLFbKj3oMCSHfJZzkXGudg10_abvJo21DsMJirPvmTMP145saP48SAgB0IQ2-v5kjPGsry7y_vy9cSvRVzQFHRczIfwoutSLrs50QbwHI_D1BXAZQGj4GZeZO62QrNXxVF47Q=w408-h306-k-no",
+    "entertainment_tags":{
+      "venue_type":["unit"],
+      "features":["boardgames","minigames"]
+    }
+  },
+  {
+    "name":"Yu Lung San Tian En Temple",
+    "category":["religion","attractions"],
+    "description":"Reportedly the largest temple complex in Southeast Asia.",
+    "hours":{
+      "mon":"08:00-17:00",
+      "tue":"08:00-17:00",
+      "wed":"08:00-17:00",
+      "thu":"08:00-17:00",
+      "fri":"08:00-17:00",
+      "sat":"08:00-17:00",
+      "sun":"08:00-17:00"
+    },
+    "address":"Jalan Sibu - Bintulu, 96000 Sibu, Sarawak",
+    "lat":2.289318040618812,
+    "lng":112.01840566664019,
+    "map link":"https://www.google.com/maps/place/Yu+Lung+San+Tian+En+Temple/@2.2892533,112.0024073,15.4z/data=!4m6!3m5!1s0x31f7878ddbd7e635:0xd5025cf801c40b66!8m2!3d2.2888004!4d112.0182114!16s%2Fg%2F11h5q77h3d?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+    "photo":"https://lh3.googleusercontent.com/gps-cs-s/AC9h4nrY2e_oUtSJJEt2Pl_g9f1RCaiOej9hHYvcn0yUgQ__Isd34wQupzYRvhdf2ajte1Zq_JsGxAEU6ov_-UJ_BkHjXy9zG3qijfBRZA7CZZ8vZNOtY7NT3V8ZIk8YVUzopX3xfTo=w408-h491-k-no",
+    "religion_tags":{
+      "religion_type":["buddha"]
+    },
+    "attractions_tags":{
+      "venue_type":["temple"]
     }
   }
 ]

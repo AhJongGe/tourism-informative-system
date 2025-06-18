@@ -18,9 +18,30 @@
     .account-form button { margin-top: 12px; padding: 8px 20px; border-radius: 7px; background: #003087; color: #fff; border: none; font-weight: bold;}
     .account-form { margin-bottom: 20px; }
     .msg { color: green; margin-bottom: 12px; }
+
+    .back-btn {
+      position: fixed;
+      top: 18px;
+      left: 18px;
+      padding: 8px 18px;
+      background: #f0f4fa;
+      color: #003087;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      box-shadow: 0 2px 6px #bbb2;
+      transition: background 0.18s;
+      z-index: 1001;
+    }
+    .back-btn:hover {
+      background: #e6f0ff;
+      color: #001e50;
+    }
   </style>
 </head>
 <body>
+  <a href="{{ url_for('user_page') }}" class="back-btn" title="Back to My Page">&#8592; Back</a>
   <div class="account-card">
     <h2>My Account</h2>
     {% if msg %}<div class="msg">{{msg}}</div>{% endif %}
@@ -45,7 +66,7 @@
     <form method="POST" class="account-form">
       <div class="account-field">
         <label>Change Email</label>
-        <input type="email" name="new_email" value="{{ user.get('email', '') }}" required>
+        <input type="email" name="new_email" value="{{ user.email }}" required>
         <button type="submit">Update Email</button>
       </div>
     </form>

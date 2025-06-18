@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign up for PayPal</title>
+  <title>Sign up for Sibu Tourism System</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -12,6 +12,8 @@
       flex-direction: column;
       align-items: center;
       padding-top: 60px;
+      margin: 0;
+      background-color: #fff;
     }
     img.logo { height: 40px; margin-bottom: 20px; }
     h2 { font-weight: 500; }
@@ -66,7 +68,7 @@
 
     <div id="extra-fields-wrapper">
       <div class="input-wrapper">
-        <input type="text" placeholder="Username">
+        <input type="text" placeholder="Username" id="username">
       </div>
       <div class="input-wrapper">
         <input type="password" id="password" placeholder="Password">
@@ -88,93 +90,110 @@
   </div>
 
   <script>
-  const nextBtn = document.getElementById('nextBtn');
-  const emailInput = document.getElementById('email');
-  const errorDiv = document.getElementById('error');
-  const extraWrapper = document.getElementById('extra-fields-wrapper');
-  const passwordInput = document.getElementById('password');
-  const confirmPasswordInput = document.getElementById('confirmPassword');
-  const togglePassword = document.getElementById('togglePassword');
-  const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+const nextBtn = document.getElementById('nextBtn');
+const emailInput = document.getElementById('email');
+const usernameInput = document.getElementById('username');
+const passwordInput = document.getElementById('password');
+const confirmPasswordInput = document.getElementById('confirmPassword');
+const errorDiv = document.getElementById('error');
+const extraWrapper = document.getElementById('extra-fields-wrapper');
+const togglePassword = document.getElementById('togglePassword');
+const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
 
-  let isFirstStep = true;
+let isFirstStep = true;
 
-  function isValidEmail(email) {
-    const regex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-    return regex.test(email);
+function isValidEmail(email) {
+  const regex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  return regex.test(email);
+}
+
+function isSecurePassword(pw) {
+  return (
+    pw.length >= 8 &&
+    /[A-Za-z]/.test(pw) &&
+    /\d/.test(pw)
+  );
+}
+
+nextBtn.addEventListener('click', (event) => {
+  event.preventDefault();
+
+  if (isFirstStep) {
+    const email = emailInput.value.trim();
+    if (isValidEmail(email)) {
+      errorDiv.classList.add('hidden');
+      extraWrapper.classList.add('show');
+      nextBtn.textContent = 'Sign Up';
+      isFirstStep = false;
+      setTimeout(() => usernameInput.focus(), 450); // focus after animation
+    } else {
+      errorDiv.classList.remove('hidden');
+      extraWrapper.classList.remove('show');
+      nextBtn.textContent = 'Next';
+    }
+    return;
   }
 
-  nextBtn.addEventListener('click', () => {
-    const email = emailInput.value.trim();
+  // Second step: submit
+  const email = emailInput.value.trim();
+  const username = usernameInput.value.trim();
+  const password = passwordInput.value;
+  const confirmPassword = confirmPasswordInput.value;
 
-    if (isFirstStep) {
-      if (isValidEmail(email)) {
-        errorDiv.classList.add('hidden');
-        extraWrapper.classList.add('show');
-        nextBtn.textContent = 'Sign Up';
-        isFirstStep = false;
-      } else {
-        errorDiv.classList.remove('hidden');
-        extraWrapper.classList.remove('show');
-        nextBtn.textContent = 'Next';
-      }
+  if (!username || !password || !confirmPassword) {
+    alert('Please fill in all fields.');
+    return;
+  }
+  if (!isSecurePassword(password)) {
+    alert('Password must be at least 8 characters and include both letters and numbers.');
+    return;
+  }
+  if (password !== confirmPassword) {
+    alert('Passwords do not match.');
+    return;
+  }
+
+  fetch('/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, username, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert('Account successfully created!');
+      window.location.href = "/login_page";  // change as needed
     } else {
-      const username = document.querySelector('input[placeholder="Username"]').value.trim();
-      const password = passwordInput.value;
-      const confirmPassword = confirmPasswordInput.value;
-
-      if (!username || !password || !confirmPassword) {
-        alert('Please fill in all fields.');
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        alert('Passwords do not match.');
-        return;
-      }
-
-      // ✅ Send registration data to backend
-      fetch('http://localhost:5000/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, username, password })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          alert('Account successfully created!');
-          window.location.href = "{{ url_for('login_page') }}";
-        } else {
-          alert('Error: ' + data.message);
-        }
-      })
-      .catch(err => {
-        console.error('Error:', err);
-        alert('Something went wrong!');
-      });
+      alert('Error: ' + data.message);
     }
+  })
+  .catch(err => {
+    console.error('Error:', err);
+    alert('Something went wrong!');
   });
+});
 
-  togglePassword.addEventListener('click', () => {
-    const isVisible = passwordInput.type === 'text';
-    passwordInput.type = isVisible ? 'password' : 'text';
-    // Use the data attributes for URLs
-    togglePassword.src = isVisible ? togglePassword.dataset.eyeClosed : togglePassword.dataset.eyeOpen;
-  });
+// Password visibility toggle
+togglePassword.addEventListener('click', () => {
+  const isVisible = passwordInput.type === 'text';
+  passwordInput.type = isVisible ? 'password' : 'text';
+  togglePassword.src = isVisible ? togglePassword.dataset.eyeClosed : togglePassword.dataset.eyeOpen;
+});
+toggleConfirmPassword.addEventListener('click', () => {
+  const isVisible = confirmPasswordInput.type === 'text';
+  confirmPasswordInput.type = isVisible ? 'password' : 'text';
+  toggleConfirmPassword.src = isVisible ? toggleConfirmPassword.dataset.eyeClosed : toggleConfirmPassword.dataset.eyeOpen;
+});
 
-  toggleConfirmPassword.addEventListener('click', () => {
-    const isVisible = confirmPasswordInput.type === 'text';
-    confirmPasswordInput.type = isVisible ? 'password' : 'text';
-    // Use the data attributes for URLs
-    toggleConfirmPassword.src = isVisible ? toggleConfirmPassword.dataset.eyeClosed : toggleConfirmPassword.dataset.eyeOpen;
-  });
+// Allow Enter key to trigger button (on either step)
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    nextBtn.click();
+  }
+});
+</script>
 
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-      nextBtn.click();
-    }
-  });
-  </script>
 
 </body>
 </html>

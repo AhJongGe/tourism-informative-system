@@ -3,260 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <title>Tourism Malaysia</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <style>
-    /* Core CSS, streamlined for clarity and extensibility */
-
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background: #fafbff;
-      color: #222;
-      scroll-behavior: smooth;
-    }
-    :root {
-      --navbar-height: 40px;
-    }
-    .navbar {
-      height: var(--navbar-height);
-      display: flex;
-      align-items: center;
-      padding: 12px 24px;
-      background: #fff;
-      border-bottom: 1px solid #eee;
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 1000;
-      padding-right: 40px; 
-    }
-    .auth-buttons {
-      margin-right: 28px; 
-    }
-    
-    .logo {
-      height: 32px;
-      margin-right: 16px;
-      cursor: pointer;
-    }
-    .nav-item, .dropdown-btn {
-      display: flex;
-      align-items: center;
-      padding: 8px 14px;
-      border-radius: 20px;
-      margin-right: 8px;
-      text-decoration: none;
-      color: #003087;
-      font-weight: bold;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.18s;
-      position: relative;
-    }
-    .nav-icon {
-      height: 28px;
-      width: 28px;
-      margin-right: 8px;
-      object-fit: contain;
-    }
-    .nav-item:hover, .dropdown-btn:hover, .dropdown-content a:hover {
-      background-color: #e6f0ff;
-    }
-    .spacer { flex-grow: 1; }
-    .auth-buttons a {
-      padding: 10px 20px;
-      margin-left: 10px;
-      border-radius: 24px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .login {
-      border: 2px solid #003087;
-      color: #003087;
-      background: #fff;
-    }
-    .signup {
-      background: #003087;
-      color: #fff;
-    }
-
-    /* Dropdown */
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      right: 0;
-      background-color: #fff;
-      min-width: 180px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      z-index: 1200;
-      padding: 6px 0;
-    }
-    .dropdown-content a {
-      color: #003087;
-      padding: 12px 14px;
-      text-decoration: none;
-      display: flex;              
-      align-items: center;      
-      border-radius: 8px;
-      transition: background 0.13s;
-      font-weight: bold;
-      white-space: nowrap;
-    }
-    .dropdown.show .dropdown-content { display: block; }
-
-    /* Hero section */
-    .hero {
-      margin-top: var(--navbar-height);
-      height: 65vh;
-      min-height: 340px;
-      background-size: cover;
-      background-position: center center;
-      display: flex;
-      align-items: flex-end;
-      justify-content: flex-end;
-    }
-
-    .hero-content {
-      background: rgba(0,0,0,0.54);
-      color: #fff;
-      padding: 60px 36px 30px 36px;
-      margin: 24px;
-      border-radius: 20px;
-      font-size: 2rem;
-      font-weight: 700;
-      text-align: right;
-    }
-    @media (max-width: 900px) {
-      :root { --navbar-height: 54px; }
-      .hero-content { padding-top: 36px; }
-    }
-
-    /* Sections */
-    section {
-      padding: 60px 0 40px 0;
-      background: #f5f6fb;
-    }
-    .section-title {
-      font-size: 2rem;
-      font-weight: bold;
-      margin: 0 0 22px 6vw;
-    }
-    .card-container {
-      display: flex;
-      gap: 24px;
-      overflow-x: auto;
-      padding: 0 6vw;
-    }
-    .card {
-      background: #fff;
-      border-radius: 18px;
-      width: 260px;
-      min-width: 260px;
-      height: 350px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.18s;
-      position: relative;
-    }
-    .card:hover { transform: translateY(-8px) scale(1.025);}
-    .card img {
-      width: 100%;
-      height: 140px;
-      object-fit: cover;
-      border-radius: 18px 18px 0 0;
-    }
-    .banner {
-      font-weight: bold;
-      font-size: 1.18rem;
-      margin: 16px 18px 8px 18px;
-      flex: none;
-      color: #003087;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-    }
-    .description {
-      margin: 0 18px 14px 18px;
-      color: #444;
-      font-size: 0.98rem;
-      flex: 1 1 auto;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .card.more-card {
-      background: #003087;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-      font-weight: 600;
-      min-width: 160px;
-      height: 350px;
-      border-radius: 18px;
-      cursor: pointer;
-    }
-
-    @media (max-width: 900px) {
-      .card { width: 85vw; min-width: 85vw; }
-      .hero-content { font-size: 1.2rem; padding: 14px 10px; }
-    }
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
   <!-- Navbar -->
   <div class="navbar">
-  <a href="#" class="nav-item" style="padding-left:0;">
-    <img src="{{ url_for('static', filename='images/swan.png') }}" alt="Sibu" class="logo">
-    Sibu
-  </a>
-  <a href="#section-cuisine" class="nav-item">
-    <img src="{{ url_for('static', filename='images/cuisines.png') }}" alt="Cuisine" class="nav-icon">Cuisines
-  </a>
-  <a href="#section-shopping" class="nav-item">
-    <img src="{{ url_for('static', filename='images/shopping.png') }}" alt="Shopping" class="nav-icon">Shopping
-  </a>
-  <a href="#section-attractions" class="nav-item">
-    <img src="{{ url_for('static', filename='images/attractions.png') }}" alt="Attractions" class="nav-icon">Attractions
-  </a>
-  <a href="#section-accomodation" class="nav-item">
-    <img src="{{ url_for('static', filename='images/hotel.png') }}" alt="Accomodation" class="nav-icon">Accomodation
-  </a>
-  <div class="dropdown">
-    <button class="dropdown-btn" id="moreDropdown">
-      More <span style="margin-left:6px;">&#x25BC;</span>
-    </button>
-    <div class="dropdown-content">
-      <a href="#section-entertainment">
-        <img src="{{ url_for('static', filename='images/entertainment.png') }}" alt="Entertainment" class="nav-icon">Entertainment
-      </a>
-      <a href="#section-transport">
-        <img src="{{ url_for('static', filename='images/transport.png') }}" alt="Transport" class="nav-icon">Transport
-      </a>
-      <a href="#section-services">
-        <img src="{{ url_for('static', filename='images/services.png') }}" alt="Services" class="nav-icon">Services
-      </a>
-      <a href="#section-religion">
-        <img src="{{ url_for('static', filename='images/religion.png') }}" alt="Religion" class="nav-icon">Religion
-      </a>
+    <a href="#" class="nav-item" style="padding-left:0;">
+      <img src="{{ url_for('static', filename='images/swan.png') }}" alt="Sibu" class="logo">
+      Sibu
+    </a>
+    <a href="#section-cuisine" class="nav-item">
+      <img src="{{ url_for('static', filename='images/cuisines.png') }}" alt="Cuisine" class="nav-icon">Cuisines
+    </a>
+    <a href="#section-shopping" class="nav-item">
+      <img src="{{ url_for('static', filename='images/shopping.png') }}" alt="Shopping" class="nav-icon">Shopping
+    </a>
+    <a href="#section-attractions" class="nav-item">
+      <img src="{{ url_for('static', filename='images/attractions.png') }}" alt="Attractions" class="nav-icon">Attractions
+    </a>
+    <a href="#section-accomodation" class="nav-item">
+      <img src="{{ url_for('static', filename='images/hotel.png') }}" alt="Accomodation" class="nav-icon">Accomodation
+    </a>
+    <div class="dropdown">
+      <button class="dropdown-btn" id="moreDropdown">
+        More <span style="margin-left:6px;">&#x25BC;</span>
+      </button>
+      <div class="dropdown-content">
+        <a href="#section-entertainment">
+          <img src="{{ url_for('static', filename='images/entertainment.png') }}" alt="Entertainment" class="nav-icon">Entertainment
+        </a>
+        <a href="#section-transport">
+          <img src="{{ url_for('static', filename='images/transport.png') }}" alt="Transport" class="nav-icon">Transport
+        </a>
+        <a href="#section-services">
+          <img src="{{ url_for('static', filename='images/services.png') }}" alt="Services" class="nav-icon">Services
+        </a>
+        <a href="#section-religion">
+          <img src="{{ url_for('static', filename='images/religion.png') }}" alt="Religion" class="nav-icon">Religion
+        </a>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="auth-buttons">
+      <a href="{{ url_for('login_page') }}" class="login">Log In</a>
+      <a href="{{ url_for('signup_page') }}" class="signup">Sign Up</a>
     </div>
   </div>
-  <div class="spacer"></div>
-  <div class="auth-buttons">
-    <a href="{{ url_for('login_page') }}" class="login">Log In</a>
-    <a href="{{ url_for('signup_page') }}" class="signup">Sign Up</a>
-  </div>
-</div>
-
   <!-- Hero Section -->
   <section class="hero" id="hero"
     style="background-image: url('{{ url_for('static', filename='images/sibu_central_night.jpg') }}');">
@@ -267,7 +59,6 @@
       <h1>Sibu, Sarawak</h1>
     </div>
   </section>
-
   <!-- Sections -->
   <section id="section-cuisine">
     <div class="section-title">Cuisine</div>
@@ -302,116 +93,11 @@
     <div class="card-container" id="religion-cards"></div>
   </section>
 
+  <!-- Control card detail logic with a global JS variable -->
   <script>
-  // Navigation smooth scroll (works for both direct and dropdown links)
-  document.querySelectorAll('.nav-item, .dropdown-content a').forEach(item => {
-    item.addEventListener('click', function(event) {
-      const sectionId = this.getAttribute('href');
-      if (sectionId === "#") {
-        event.preventDefault();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        document.querySelector('.dropdown').classList.remove('show');
-        return;
-      }
-      if (sectionId && sectionId.startsWith('#')) {
-        event.preventDefault();
-        document.querySelector(sectionId).scrollIntoView({ behavior: 'smooth' });
-        document.querySelector('.dropdown').classList.remove('show');
-      }
-    });
-  });
-
-  // Dropdown show/hide
-  document.getElementById('moreDropdown').addEventListener('click', function(event) {
-    event.stopPropagation();
-    const dropdown = this.parentElement;
-    dropdown.classList.toggle('show');
-  });
-  // Hide dropdown if clicked elsewhere
-  document.body.addEventListener('click', function() {
-    document.querySelector('.dropdown').classList.remove('show');
-  });
-
-  // CARD CATEGORIES -- map to your place categories
-  const SECTIONS = [
-    { id: 'cuisine-cards', category: 'cuisine' },
-    { id: 'shopping-cards', category: 'shopping' },
-    { id: 'attractions-cards', category: 'attractions' },
-    { id: 'accomodation-cards', category: 'accomodation' },
-    { id: 'entertainment-cards', category: 'entertainment' },
-    { id: 'transport-cards', category: 'transport' },
-    { id: 'services-cards', category: 'services' },
-    { id: 'religion-cards', category: 'religion' }
-  ];
-
-  // Map section categories to their corresponding Flask page routes
-  const PAGE_ROUTES = {
-    cuisine: '/cuisines',
-    shopping: '/shopping',
-    attractions: '/attractions',
-    accomodation: '/accomodation',
-    entertainment: '/entertainment',
-    transport: '/transport',
-    services: '/services',
-    religion: '/religion'
-  };
-
-  // Fetch places and render cards
-  fetch('/api/places')
-    .then(resp => {
-      if (!resp.ok) throw new Error('Network response was not ok');
-      return resp.json();
-    })
-    .then(data => {
-      SECTIONS.forEach(section => {
-        const container = document.getElementById(section.id);
-        if (!container) return;
-
-        // Filter by category: support string or array
-        const items = data.filter(place => {
-          if (!place.category) return false;
-          if (Array.isArray(place.category)) {
-            return place.category.includes(section.category);
-          } else {
-            return place.category === section.category;
-          }
-        });
-
-        // Shuffle the array for randomness
-        items.sort(() => Math.random() - 0.5);
-
-        // Clear previous cards in the container (if rerendering)
-        container.innerHTML = '';
-
-        // Add up to 6 cards
-        items.slice(0, 6).forEach(place => {
-          container.innerHTML += `
-            <div class="card">
-              <img src="${place.photo || '/static/images/default.jpg'}" alt="${place.name}">
-              <div class="banner">${place.name}</div>
-              <div class="description">${place.description}</div>
-            </div>
-          `;
-        });
-
-        // If more than 6 items, add the "More" card
-        if (items.length > 6) {
-          const pageRoute = PAGE_ROUTES[section.category] || '/';
-          container.innerHTML += `
-            <div class="card more-card" onclick="window.location.href='${pageRoute}';">
-              More
-            </div>
-          `;
-        }
-      });
-    })
-    .catch(err => {
-      console.error('Failed to fetch or render places:', err);
-    });
-</script>
-
-
-
+    // False means "mainpage mode" (no card click-to-detail)
+    var ENABLE_CARD_DETAIL = false;
   </script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

@@ -1,0 +1,172 @@
+/* Shared: Core layout */
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60px;
+  margin: 0;
+  background-color: #fff;
+}
+
+img.logo { height: 40px; margin-bottom: 20px; }
+h2 { font-weight: 500; }
+
+.input-wrapper {
+  position: relative;
+  width: 350px;
+  margin-top: 15px;
+}
+
+input[type="email"],
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: block;
+}
+
+button {
+  background-color: #003087;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  padding: 14px 0;
+  width: 350px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: filter 0.2s;
+}
+button:hover { filter: brightness(1.3); }
+button:active { filter: brightness(0.7); }
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
+.hidden { display: none; }
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #ccc;
+}
+.divider:not(:empty)::before {
+  margin-right: 10px;
+}
+.divider:not(:empty)::after {
+  margin-left: 10px;
+}
+
+/* Shared button styles */
+.btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 999px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.05s ease;
+}
+.btn-primary {
+  background-color: #003087;
+  color: white;
+}
+.btn-primary:hover {
+  background-color: #002570;
+}
+.btn-secondary {
+  background-color: white;
+  border: 1px solid #003087;
+  color: #003087;
+}
+.btn-secondary:hover {
+  background-color: #f2f8ff;
+}
+
+/* Login-exclusive */
+.login {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  color: #0070ba;
+  font-weight: bold;
+  text-decoration: none;
+  transition: filter 0.2s;
+}
+.login-container {
+  width: 350px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 40px 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+.login:hover { filter: brightness(1.3); }
+.login:active { filter: brightness(0.7); }
+
+/* Toggle password icon */
+.toggle-visibility {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.toggle-password img {
+  width: 24px;
+  height: 24px;
+}
+.password-container {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.3s ease;
+}
+.password-container.visible {
+  height: 110px;
+}
+
+
+/* Sign-up-exclusive */
+#extra-fields-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.4s, opacity 0.4s, margin-bottom 0.4s;
+}
+#extra-fields-wrapper.show {
+  max-height: 500px;
+  opacity: 1;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 400px) {
+  .input-wrapper, button { width: 90%; }
+}

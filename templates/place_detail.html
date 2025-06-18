@@ -1,6 +1,30 @@
 {% extends "detail_base.html" %}
 {% block title %}{{ place.name }} | Details{% endblock %}
 {% block content %}
+
+<style>
+  .back-btn {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    padding: 8px 18px;
+    background: #f0f4fa;
+    color: #003087;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+    box-shadow: 0 2px 6px #bbb2;
+    transition: background 0.18s;
+    z-index: 1001;
+  }
+  .back-btn:hover {
+    background: #e6f0ff;
+    color: #001e50;
+  }
+</style>
+<a href="javascript:history.back()" class="back-btn" title="Back">&#8592; Back</a>
+
 <div class="place-detail">
   {% if place.photo %}
     <img src="{{ place.photo }}" alt="Photo of {{ place.name }}">
